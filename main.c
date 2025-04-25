@@ -79,14 +79,15 @@ int main() {
         scanf("%d", &opcao);
 
         switch(opcao) {
-            case 1:
-            /*O sistema deve permitir o registro de transações financeiras, com as seguintes informações:
-            ■ Data da transação (dia, mês, ano)
-            ■ Tipo de transação (receita ou despesa)
-            ■ Valor da transação
-            ■ Descrição (opcional, para detalhar a transação)
-            ■ Categorias*/
-            subOpcao = 1;
+        case 1:
+                /*O sistema deve permitir o registro de transações financeiras, com as seguintes informações:
+                ■ Data da transação (dia, mês, ano)
+                ■ Tipo de transação (receita ou despesa)
+                ■ Valor da transação
+                ■ Descrição (opcional, para detalhar a transação)
+                ■ Categorias*/
+                // Cadastrar Receita
+                subOpcao = 1;
             opcao = 0;
             while (subOpcao != 2) {
                 limparTela();
@@ -105,10 +106,8 @@ int main() {
                 int num_opcoes = 6; // Número de categorias
                 // Registrar a transação de despesa
                 exibirTransacao(&receita_total, "RECEITA", PORTUGUES);
-                
                 // Ler a categoria de despesa
                 categoria = entradaSaida(titulo, option, num_opcoes);  
-        
                 // Verificar se a categoria é válida e exibir saldo da despesa
                 if (categoria >= 1 && categoria <= 6) {
                     printf("\nSua conta atual possui X RECEITA no montante de %i.%02i CAD \ncadastradas na categoria %i\n", receita_total / 100, receita_total % 100, categoria);
@@ -116,22 +115,6 @@ int main() {
                 } else {
                     printf("Opcao invalida!\n");
                 }
-        
-                // Garantir que o valor da transação seja numérico
-                int transacao_valida = 0;
-                while (!transacao_valida) {
-                    printf("Digite o valor da receita (ex: 750 para $7.50 CAD): ");
-                    if (scanf("%d", &transacao) != 1) {
-                        // Se não for numérico, limpar o buffer e pedir novamente
-                        printf("Valor inválido! Por favor, insira um número válido.\n");
-                        while (getchar() != '\n');  // Limpa o buffer de entrada
-                    } else {
-                        transacao_valida = 1;  // Sai do loop se o valor for válido
-                    }
-                }
-        
-                // Adiciona o valor da transação à receita
-                receita_total += transacao;
         
                 // Pergunta ao usuário se ele quer continuar ou sair
                 printf("Digite [ 1 ] para Continuar || Digite [ 2 ] para Sair: ");
@@ -319,19 +302,32 @@ void exibirRelatorio(int receita_total, int despesa_total) {
 // Função para ler o valor de uma transação
 int lerValor(const char* tipo, enum Idioma idioma) {
     int valor;
-            // Mostra mensagem de acordo com o idioma
+    while (1) { // Loop até o valor ser válido
+        // Mostra mensagem de acordo com o idioma
         if (idioma == PORTUGUES) {
             printf("Digite o valor da %s (ex: 750 para $7.50 CAD): ", tipo);
-            scanf("%d", &valor);
         } else if (idioma == FRANCES) {
             printf("Digitez la valeur de la %s (ex: 750 pour $7.50 CAD): ", tipo);
-            scanf("%d", &valor);
         } else if (idioma == INGLES) {
             printf("Write the value of %s (ex: 750 to $7.50 CAD): ", tipo);
-            scanf("%d", &valor);
         }
-    return valor;
+
+        // Lê a entrada
+        if (scanf("%d", &valor) != 1) {
+            // Caso a leitura não seja um número inteiro
+            while (getchar() != '\n'); // Limpa o buffer
+            if (idioma == PORTUGUES) {
+                printf("Erro! Digite apenas valores numéricos.\n");
+            } else if (idioma == FRANCES) {
+                printf("Erreur! Veuillez entrer uniquement des valeurs numériques.\n");
+            } else if (idioma == INGLES) {
+                printf("Error! Please enter only numeric values.\n");
+            }
+        } else {
+            return valor; // Se o valor for válido, retorna
+        }
     }
+}
 int lerEscolha(enum Idioma idioma) {
     int subOpcao = 0, leitura = 0;
 
