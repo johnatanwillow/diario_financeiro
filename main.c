@@ -79,15 +79,14 @@ int main() {
         scanf("%d", &opcao);
 
         switch(opcao) {
-        case 1:
-                /*O sistema deve permitir o registro de transações financeiras, com as seguintes informações:
-                ■ Data da transação (dia, mês, ano)
-                ■ Tipo de transação (receita ou despesa)
-                ■ Valor da transação
-                ■ Descrição (opcional, para detalhar a transação)
-                ■ Categorias*/
-                // Cadastrar Receita
-                subOpcao = 1;
+            case 1:
+            /*O sistema deve permitir o registro de transações financeiras, com as seguintes informações:
+            ■ Data da transação (dia, mês, ano)
+            ■ Tipo de transação (receita ou despesa)
+            ■ Valor da transação
+            ■ Descrição (opcional, para detalhar a transação)
+            ■ Categorias*/
+            subOpcao = 1;
             opcao = 0;
             while (subOpcao != 2) {
                 limparTela();
@@ -106,8 +105,10 @@ int main() {
                 int num_opcoes = 6; // Número de categorias
                 // Registrar a transação de despesa
                 exibirTransacao(&receita_total, "RECEITA", PORTUGUES);
+                
                 // Ler a categoria de despesa
                 categoria = entradaSaida(titulo, option, num_opcoes);  
+        
                 // Verificar se a categoria é válida e exibir saldo da despesa
                 if (categoria >= 1 && categoria <= 6) {
                     printf("\nSua conta atual possui X RECEITA no montante de %i.%02i CAD \ncadastradas na categoria %i\n", receita_total / 100, receita_total % 100, categoria);
@@ -115,6 +116,22 @@ int main() {
                 } else {
                     printf("Opcao invalida!\n");
                 }
+        
+                // Garantir que o valor da transação seja numérico
+                int transacao_valida = 0;
+                while (!transacao_valida) {
+                    printf("Digite o valor da receita (ex: 750 para $7.50 CAD): ");
+                    if (scanf("%d", &transacao) != 1) {
+                        // Se não for numérico, limpar o buffer e pedir novamente
+                        printf("Valor inválido! Por favor, insira um número válido.\n");
+                        while (getchar() != '\n');  // Limpa o buffer de entrada
+                    } else {
+                        transacao_valida = 1;  // Sai do loop se o valor for válido
+                    }
+                }
+        
+                // Adiciona o valor da transação à receita
+                receita_total += transacao;
         
                 // Pergunta ao usuário se ele quer continuar ou sair
                 printf("Digite [ 1 ] para Continuar || Digite [ 2 ] para Sair: ");
