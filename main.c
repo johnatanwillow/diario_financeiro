@@ -184,7 +184,6 @@ int main() {  /******************************************************[ INICIO DO
                     imprimirValor(m.valorCentavos);
                     printf("\nData/Date: %02i/%02i/%04i\n", m.dia, m.mes, m.ano);
                     subOpcao = lerEscolha();
-                    free(lista);
                 }
                 break;
             case 2: /*_____________________________________(Cadastrar Despesa)_______________________________________*/
@@ -291,7 +290,6 @@ void exibirMenuPrincipal() {
     printf(textos[idiomaAtual][26]); // (26) Escolha
 }
 void expandirLista() {
-    
     capacidade = (capacidade == 0) ? 10 : capacidade * 2;
     Movimentacao *novaLista = realloc(lista, capacidade * sizeof(Movimentacao));
     if (!novaLista) {
