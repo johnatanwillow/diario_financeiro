@@ -136,8 +136,8 @@ const char *textos[][59] = { /*===================================[ DICIONARIO ]
         "Digite a data (dd/mm/aaaa): ",                       // (31) Digite o dia
         "Digite o mes e ano (mm/aaaa): ",                     // (32) Digite o mes e ano
         "Nao ha transacoes para este periodo.\n",             // (33) Nao ha transacoes
-        "Relatorio Diario para %02d/%02d/%04d\n",              // (34) Titulo Relatorio Diario
-        "Relatorio Mensal para %02d/%02d/%04d\n",              // (35) Titulo Relatorio Mensal
+        "Relatorio Diario para %02i/%02i/%04i\n",              // (34) Titulo Relatorio Diario
+        "Relatorio Mensal para %02i/%02i/%04i\n",              // (35) Titulo Relatorio Mensal
         "Erro na leitura da data. Formato esperado dd/mm/aaaa.\n", //(36) Erro de leitura
         "Erro de alocacao de memoria ao ler movimentacao!\n",     //(37)Erro de memoria
         "Valor invalido! Por favor, insira um numero inteiro valido ou ZERO/NEGATIVO para cancelar.\n", // (38) Erro - Valor inválido
@@ -163,7 +163,7 @@ const char *textos[][59] = { /*===================================[ DICIONARIO ]
         "Obrigado! Seus dados nos ajudarao a melhorar o aplicativo.\n" // (58) Agradecimento de consentimento PT
     },
     { // FR - Quebecois (pas d'accent) (indice 1)
-        "Salut=, %s\nJe suis Alef et voici votre JOURNAL FINANCIER PERSONNEL en dollar canadien.\n \t \t Veuillez choisir une option ci-dessous\n \t MENU PRINCIPAL", // (0) Bienvenue
+        "Salut, %s\nJe suis Alef et voici votre JOURNAL FINANCIER PERSONNEL en dollar canadien.\n \t \t Veuillez choisir une option ci-dessous\n \t MENU PRINCIPAL", // (0) Bienvenue
         "[1] Enregistrer un revenu",                            // (1) Menu - Revenu
         "[2] Enregistrer une depense",                          // (2) Menu - Depense
         "[3] Consulter le solde",                               // (3) Menu - Solde
@@ -197,8 +197,8 @@ const char *textos[][59] = { /*===================================[ DICIONARIO ]
         "Entrez la date (jj/mm/aaaa): ",                        // (31) Entrez le jour
         "Entrez le mois et l'annee (mm/aaaa): ",                // (32) Entrez le mois et l'annee
         "Aucune transaction pour cette periode.\n",             // (33) Aucune transaction
-        "Rapport quotidien pour %02d/%02d/%04d\n",              // (34) Titulo Relatorio Diario
-        "Rapport mensuel pour %02d/%02d/%04d\n",                // (35) Titulo Relatorio Mensal
+        "Rapport quotidien pour %02i/%02i/%04i\n",              // (34) Titulo Relatorio Diario
+        "Rapport mensuel pour %02i/%02i/%04i\n",                // (35) Titulo Relatorio Mensal
         "Erreur lors de la lecture de la date. Format attendu jj/mm/aaaa.\n", //Erreur de la lecture de la date
         "Erreur d'allocation de memoire lors de la lecture du mouvement !\n", // Erreur de memoire
         "Montant invalide ! Veuillez saisir un nombre entier valide ou ZERO/NEGATIF pour annuler.\n", // (38) Erro - Montant invalide
@@ -258,8 +258,8 @@ const char *textos[][59] = { /*===================================[ DICIONARIO ]
         "Enter day (dd/mm/yyyy): ",                             // (31) Enter day
         "Enter month and year (mm/yyyy): ",                     // (32) Enter month and year
         "No transactions for this period.\n",                   // (33) No transactions
-        "Daily Report for %02d/%02d/%04d\n",                    // (34) Titulo Relatorio Diario
-        "Monthly Report for %02d/%02d/%04d\n",                  // (35) Titulo Relatorio Mensal
+        "Daily Report for %02i/%02i/%04i\n",                    // (34) Titulo Relatorio Diario
+        "Monthly Report for %02i/%02i/%04i\n",                  // (35) Titulo Relatorio Mensal
         "Error reading date. Expected format: dd/mm/yyyy.\n",     //(36) Error reading date
         "Memory allocation error when reading movement!\n",       // (37) Memory
         "Invalid amount! Please enter a valid integer or ZERO/NEGATIVE to cancel.\n", // (38) Error - Invalid amount
@@ -400,16 +400,24 @@ void alterarIdioma() {
 
     int solicitar_dados_e_nome = 0;
     if (idiomaAtual == FR || idiomaAtual == EN) { // Verifica se o idioma atual é FR ou EN E se houve uma mudança de idioma
-        if (idiomaAnterior != idiomaAtual || 
-            (idiomaAnterior == FR && idiomaAtual == FR) || 
+        if (idiomaAnterior != idiomaAtual ||
+            (idiomaAnterior == FR && idiomaAtual == FR) ||
             (idiomaAnterior == EN && idiomaAtual == EN)) {
             solicitar_dados_e_nome = 1;
         }
     }
+
     if (solicitar_dados_e_nome) {
         resultadoConsentimento = exibirMenuConsentimentoDados();
-        solicitarNovoNomeUsuario();
+        if (resultadoConsentimento == 0) {
+            salvarTodasMovimentacoes("df.bin");
+            limparTela();
+            despedida();
+            exit(0);
+        }
+        solicitarNovoNomeUsuario(); // Esta linha só será alcançada se o consentimento for dado
     }
+    
     if (resultadoConsentimento == 0) {
         salvarTodasMovimentacoes("df.bin");
         limparTela();
@@ -531,7 +539,7 @@ int exibirMenuConsentimentoDados() {
         PRINT_MSG(15); // (15) "Digite [ 1 ] para SIM || Digite [ 2 ] para Sair: "
 
         while (1) {
-            if (scanf("%d", &escolhaConsentimento) != 1) {
+            if (scanf("%i", &escolhaConsentimento) != 1) {
                 bufferLimpo();
                 tratarOpcaoInvalida();
                 PRINT_MSG(15); // (15) "Digite [ 1 ] para SIM || Digite [ 2 ] para Sair: "
@@ -695,7 +703,7 @@ void gerenciarSaldoEMeta() {
                         "Back to Main Menu");
     
     PRINT_MSG(26); //(26) "Sua Escolha: "
-    scanf("%d", &subOpcao); 
+    scanf("%i", &subOpcao); 
     bufferLimpo(); 
 
     if (subOpcao == 1) {
@@ -775,14 +783,14 @@ void imprimirMovimentacoes(int tipoRelatorio, int diaFiltro, int mesFiltro, int 
 
         if (imprimir) {
             if (tipoRelatorio != 0) { 
-                printf("[%02d] ", lista[willow].dia);
+                printf("[%02i] ", lista[willow].dia);
             }
             printf("[%c] %s - %s - ", 
                    lista[willow].tipo,
                    lista[willow].descricao,
                    nomesCategorias[lista[willow].categoriaMovimentacao.tipoCategoria][idiomaAtual]);
             imprimirValor(lista[willow].valorCentavos);
-            printf(" CAD - Data: %02d/%02d/%04d\n", 
+            printf(" CAD - Data: %02i/%02i/%04i\n", 
                    lista[willow].dia, lista[willow].mes, lista[willow].ano);
             transacoesEncontradas++;
         }
@@ -801,7 +809,7 @@ void menuRelatorios() {
     do {
         limparTela();
         printf("%s", textos[idiomaAtual][30]); // (30) Tipo de relatorio e sub-menu
-        scanf("%d", &subOpcao); 
+        scanf("%i", &subOpcao); 
         bufferLimpo();
         switch (subOpcao) {
             case 1: // Geral 
@@ -842,7 +850,7 @@ void menuRelatorios() {
 }
 
 void imprimirValor(int centavos) {
-    printf("$ %d.%02d CAD", centavos / 100, abs(centavos % 100)); 
+    printf("$ %i.%02i CAD", centavos / 100, abs(centavos % 100)); 
 }
 
 void inserirMovimentacao(Movimentacao m) {
@@ -880,7 +888,7 @@ int lerDataComValidacao(int *dia, int *mes, int *ano, int tipo_leitura) {// Impl
                 return 0; 
             }
             // Tenta ler 3 inteiros e o resto da string deve ser apenas '\n' ou nulo
-            sucesso_leitura = sscanf(linha_data, "%d/%d/%d", &d_temp, &m_temp, &a_temp);
+            sucesso_leitura = sscanf(linha_data, "%i/%i/%i", &d_temp, &m_temp, &a_temp);
             // Verifica se leu 3 itens e se o final da string é limpo
             if (sucesso_leitura == 3 && dataValida(d_temp, m_temp, a_temp)) {
                 *dia = d_temp;
@@ -894,7 +902,7 @@ int lerDataComValidacao(int *dia, int *mes, int *ano, int tipo_leitura) {// Impl
                 return 0;
             }
             // Tenta ler 2 inteiros e o resto da string deve ser apenas '\n' ou nulo
-            sucesso_leitura = sscanf(linha_data, "%d/%d", &m_temp, &a_temp);
+            sucesso_leitura = sscanf(linha_data, "%i/%i", &m_temp, &a_temp);
             // Para validação mensal, definimos o dia como 1
             if (sucesso_leitura == 2 && dataValida(1, m_temp, a_temp)) {
                 *dia = 1; // Dia padrão para o mês
@@ -965,7 +973,7 @@ Movimentacao *lerMovimentacao(char tipo) {
     do {
         PRINT_MSG(27);
         for (int willow = 0; willow < NUM_CATEGORIAS; willow++) { 
-            printf("[%d] %s\n", willow + 1, nomesCategorias[willow][idiomaAtual]);
+            printf("[%i] %s\n", willow + 1, nomesCategorias[willow][idiomaAtual]);
         }
         PRINT_MSG(26);
         char linha_categoria[10];
