@@ -2,7 +2,7 @@
 
 ## 🏆 Sobre o Projeto
 
-O **Diário Financeiro Pessoal** é um gerenciador de finanças pessoais desenvolvido em **C** por um personagem fictício chamado **Filipe**, criado especialmente para este projeto. Seu objetivo é ajudar usuários a controlarem suas receitas e despesas, acompanharem o saldo atual e gerarem relatórios financeiros detalhados.  
+O **Diário Financeiro Pessoal** é um gerenciador de finanças pessoais desenvolvido em **C** por um personagem fictício chamado **Filipe**, criado especialmente para este projeto. No storytelling desenvolvido por mim, este persona seria o estudante intercambista no Quebéc - CA, idealizador do projeto do Diario Financeiro, cujo objetivo é ajudar usuários a controlarem suas receitas e despesas, acompanharem o saldo atual e gerarem relatórios financeiros detalhados.  
 
 Com suporte a múltiplos idiomas (Português, Inglês e Francês - Canadá), o sistema oferece uma interface simples, eficiente e prática para facilitar o controle das finanças pessoais.
 
