@@ -1,72 +1,76 @@
-# 📌 README – Diário Financeiro Pessoal
-
-# 🏆 Sobre o Projeto:
-
+#📌 README – Diário Financeiro Pessoal
+##🏆 Sobre o Projeto:
 O Diário Financeiro Pessoal é um gerenciador de finanças desenvolvido em C que permite controlar receitas e despesas, visualizar o saldo atual e gerar relatórios detalhados. Com suporte a múltiplos idiomas (Português, Inglês e Francês), ele oferece uma interface simples e eficiente para facilitar o controle financeiro.
 
-# 🔹 Objetivo: Criar um sistema prático e rápido para acompanhar ganhos e gastos.
-# 🔹 Público-Alvo: Qualquer pessoa que deseja melhorar sua organização financeira.
-
+🔹 Objetivo: Criar um sistema prático e rápido para acompanhar ganhos e gastos.
+🔹 Público-Alvo: Qualquer pessoa que deseja melhorar sua organização financeira.
 🛠 Funcionalidades Principais
-✔ Cadastro de receitas e despesas – Registre suas transações facilmente.
-✔ Exibição de saldo atualizado – Veja o total de receitas menos despesas.
-✔ Geração de relatórios – Exporte suas transações para CSV ou gráficos ASCII.
-✔ Modo multilíngue – Alterne entre Português, Inglês e Francês.
-✔ Interface intuitiva – Menu interativo e fácil de usar.
-✔ Salvamento de dados – Registros armazenados para consultas futuras.
+Cadastro de receitas e despesas – Registre suas transações facilmente com descrição, valor, data e categoria.
+Exibição de saldo atualizado – Veja o total de receitas menos despesas.
+Geração de relatórios – Exporte suas transações em relatórios detalhados (geral, diário, mensal) ou visualize um gráfico de fluxo de caixa em ASCII.
+Modo multilíngue – Alterne entre Português, Inglês (Canadá) e Francês (Canadá).
+Interface intuitiva – Menu interativo e fácil de usar no console.
+Persistência de dados – Todos os registros e a meta financeira são armazenados em um arquivo binário, garantindo que seus dados sejam preservados e carregados automaticamente em futuras sessões.
+Definição de meta financeira – Estabeleça um objetivo financeiro e acompanhe seu progresso com uma barra indicadora.
+📜 Fluxo de Funcionamento
+Início – O programa é carregado e o usuário é saudado com uma mensagem de boas-vindas.
 
-# 📜 Fluxo de Funcionamento
-1️⃣ Início – O usuário inicia o programa e acessa o menu.
-2️⃣ Menu Principal:
-
-![image](https://github.com/user-attachments/assets/38d642ad-7eeb-47d1-9f91-8fd372f93862)
+##Exibição do Menu Principal:
 
 [1] Cadastrar Receita 🟢
-
 [2] Cadastrar Despesa 🔴
-
-[3] Exibir Saldo Atual 💰
-
-[4] Gerar Relatórios 📊
-
+[3] Consultar Saldo 💰
+[4] Gerar Relatório 📊
 [5] Alterar Idioma 🌍
+[6] Remover Movimentação 🗑️
+[7] Sair 🚪
+![image](https://github.com/user-attachments/assets/b816dc4a-39f6-4628-9605-854fd4028769)
 
-[6] Salvar e Sair 💾
+##Processamento das Opções:
 
-![Green White Modern Professional Business Order Flowchart Graph](https://github.com/user-attachments/assets/588e2c78-a0e7-464d-a06d-bbc1413f379c)
+Cadastrar Receita/Despesa: Solicita detalhes da transação (data, tipo, valor, descrição, categoria) e a registra.
+Consultar Saldo: Calcula e exibe o saldo total, além de permitir a definição ou visualização de uma meta financeira com barra de progresso.
+Gerar Relatório: Oferece opções para visualizar relatórios gerais, diários, mensais ou um gráfico de fluxo de caixa.
+Alterar Idioma: Permite mudar o idioma da interface.
+Remover Movimentação: Remove uma transação específica com base na sua descrição.
+Sair: Salva todas as movimentações e metas em um arquivo binário e encerra o programa.
+Retorno ao menu ou finalização do programa: Após cada operação, o usuário pode escolher continuar no menu ou sair.
 
+🚀 Como Usar
+Baixe o código-fonte do projeto em seu computador.
 
+Compile o código utilizando um compilador C (como GCC) no terminal:
 
-3️⃣ Processamento da escolha do usuário
+Bash
 
-O programa executa a ação conforme a opção escolhida.
-4️⃣ Retorno ao menu ou finalização do programa
+gcc -o diario_financeiro main.c -Wall
+(Certifique-se de que o nome do arquivo .c esteja correto, se for diferente de main.c.)
 
-# 1️⃣ Baixe o código-fonte do projeto.
+Execute o programa no terminal:
 
-# 2️⃣ Compile o código utilizando um compilador C (como GCC):
-gcc diario_financeiro.c -o diario_financeiro
+No Windows:
+Bash
 
-# 3️⃣ Execute o programa no terminal:
+.\diario_financeiro.exe
+No Linux/macOS:
+Bash
+
 ./diario_financeiro
-
 🔧 Tecnologias Utilizadas
-📌 Linguagem: C
-📌 Compilador: GCC
-📌 Formato de armazenamento: Arquivo binário ou CSV
-
+Linguagem: C
+Compilador: GCC
+Formato de armazenamento: Arquivo binário (.bin)
 🎨 Melhorias Futuras
-🔹 Suporte para armazenamento em banco de dados.
-🔹 Interface gráfica para facilitar o uso.
-🔹 Estatísticas financeiras detalhadas com gráficos interativos.
-
+Suporte para armazenamento em banco de dados para maior escalabilidade.
+Implementação de interface gráfica para uma experiência de usuário mais rica.
+Estatísticas financeiras detalhadas com gráficos interativos e análise de tendências.
+Funcionalidade de exportação de relatórios para CSV.
 📜 Licença
 Este projeto é de código aberto e pode ser utilizado livremente para fins educacionais e pessoais.
 
 👨‍💻 Desenvolvido por alunos do curso de Intro. Programação – 2025 🚀
 
-
-
+Ainda tem alguma dúvida sobre como usar ou melhorar o Diário Financeiro Pessoal? Sinta-se à vontade para perguntar!
 
 
 
