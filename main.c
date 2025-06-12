@@ -1,42 +1,81 @@
-/******************************************************************************
-DIARIO FINANCEIRO PESSOAL (PROJETO 9)
-Data de criação: 27 mar 2025.
-REPOSITÓRIO DO CÓDIGO: https://github.com/johnatanwillow/diario_financeiro
-+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
- - Estrutura do Fluxograma
-1️⃣ Início
-2️⃣ Exibir Menu Principal
-"[1] Cadastrar Receita",
-"[2] Cadastrar Despesa",
-"[3] Consultar Saldo",
-"[4] Gerar Relatorio",
-"[5] Alterar Idioma",
-"[6] Remover Movimentacao",
-"[7] Sair",
-
-3️⃣ Processamento das Opções
-- [1] ou [2] ➜ Solicita e registra transações (data, tipo, valor, descrição, categoria)
-- [3] ➜ Calcula saldo diário/mensal e sugere meta financeira
-- [4] ➜ Lista transações por dia ou mês e gera gráficos ASCII ou CSV
-- [5] ➜ Alterna idioma para francês ou inglês (CANADA)
-- [6] ➜ Remove movimentação especificada
-4️⃣ Encerramento:
-- [7] ➜ Salva dados e encerra com delay de 3 segundos
-+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
- - PERSISTÊNCIA DE DADOS
-○ Todas as transações financeiras registradas devem ser armazenadas em um arquivo binário,
-garantindo que os dados sejam preservados após o encerramento do programa. (  )
-○ O sistema deve carregar automaticamente os dados do arquivo ao ser iniciado, permitindo a continuidade do controle financeiro. (  )
- - REQUISITOS TECNICOS
-● O sistema deve ser implementado em C LANGUAGE. ( X )
-● O uso de structs (X), vetores (X), arquivos binários ( ) e ponteiros ( X ) é obrigatório.
-● O código deve ser modularizado, com funções bem definidas para cada operação do sistema. ( X )
-● O sistema deve interagir com o usuário via entrada e saída de texto no console. ( X )
-*******************************************************************************/
+/*******************************************************************************
+ * PROJETO FINAL: DIÁRIO FINANCEIRO PESSOAL (MVP)
+ *
+ * DESCRIÇÃO:
+ * Uma aplicação de console desenvolvida em C para o gerenciamento de finanças
+ * pessoais, permitindo registro de receitas/despesas, consulta de saldo,
+ * geração de relatórios e definição de metas. O sistema é projetado para
+ * ser robusto, modular e aderente a boas práticas de programação.
+ *
+ * DESENVOLVEDORES:
+ * GABRIEL DE MELO
+ * JOHNATAN WILLOW DIAS DE ANDRADE
+ * MATHEUS GOMES RODRIGUES
+ * NICOLE DOS SANTOS CASSIANO
+ *
+ * DISCIPLINA: Introdução à Programação – 2025/1
+ * INSTITUIÇÃO: Universidade Federal de Goiás (UFG) - Instituto de Informática (INF)
+ * PROFESSOR: Hugo Marciano de Melo (marciano@ufg.br)
+ *
+ * DATA DE CRIAÇÃO: 27 de março de 2025
+ * ÚLTIMA ATUALIZAÇÃO: 10 de junho de 2025
+ * REPOSITÓRIO DO CÓDIGO: https://github.com/johnatanwillow/diario_financeiro
+ *
+ * +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+ * - ESTRUTURA E FUNCIONALIDADES PRINCIPAIS (FLUXO)
+ * 1️⃣ INÍCIO: Carregamento automático de dados financeiros persistidos.
+ *
+ * 2️⃣ MENU PRINCIPAL: O usuário é guiado pelas seguintes opções:
+ * [1] Cadastrar Receita
+ * [2] Cadastrar Despesa
+ * [3] Consultar Saldo
+ * [4] Gerar Relatório
+ * [5] Alterar Idioma
+ * [6] Remover Movimentação
+ * [7] Sair
+ *
+ * 3️⃣ PROCESSAMENTO DAS OPÇÕES:
+ * - [1] ou [2] ➜ Solicita e registra transações (data, tipo, valor, descrição, categoria)
+ * - [3] ➜ Calcula e exibe o saldo financeiro, além de gerenciar/exibir metas financeiras.
+ * - [4] ➜ Oferece relatórios (geral, diário, mensal) e um gráfico de fluxo de caixa em ASCII.
+ * - [5] ➜ Permite alternar entre Português, Francês Canadense e Inglês Canadense;
+ * inclui lógica para solicitar consentimento de dados anônimos e novo nome de usuário
+ * (especialmente para idiomas canadenses, conforme legislação local).
+ * - [6] ➜ Remove uma movimentação específica baseada em sua descrição.
+ *
+ * 4️⃣ ENCERRAMENTO:
+ * - [7] ➜ Salva todos os dados em arquivo binário e encerra o programa após um breve delay (1 segundo).
+ *
+ * +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+ * - DESTAQUES DE DESIGN E CONFORMIDADE
+ *
+ * ● PERSISTÊNCIA DE DADOS: Todas as transações e metas são salvas em arquivo binário (df.bin)
+ * e carregadas automaticamente, garantindo a integridade dos dados. (✓)
+ * ● REQUISITOS TÉCNICOS: Implementado em C, com uso obrigatório de structs, vetores,
+ * arquivos binários e ponteiros. O código é modularizado e interage via console. (✓)
+ * ● PRIMAZIA DO IDIOMA FRANCÊS (CANADÁ): Prioridade ao francês canadense na interface
+ * e lógicas específicas, em conformidade com a Lei 101 de Quebec.
+ * ● CONFORMIDADE COM LEI DE PROTEÇÃO DE DADOS (PIPEDA): Simulação de consentimento
+ * para dados anônimos, refletindo a Lei de Proteção de Informações Pessoais e Documentos Eletrônicos.
+ * ● USO DE INTEIROS PARA VALORES FINANCEIROS: Todos os valores monetários são
+ * armazenados em centavos (int), evitando erros de precisão de ponto flutuante.
+ * ● ADOÇÃO DO PADRÃO DE DATA ISO 8601 (YYYY-MM-DD): Garante clareza e interoperabilidade,
+ * alinhado às práticas do Governo do Canadá.
+ * ● REUTILIZAÇÃO DE CÓDIGO: Uso de funções auxiliares e macros para otimizar o desenvolvimento.
+ * ● CRIATIVIDADE E USABILIDADE: Suporte multilíngue, efeito de "digitação" de mensagens,
+ * gerenciamento de meta financeira com barra de progresso visual e gráficos ASCII.
+ *
+ *******************************************************************************/
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <math.h> 
+
+// --- DEFINIÇÕES DE MACROS ---
+#define T(index) textos[idiomaAtual][index] // Macro para acessar o texto do dicionário
+#define PRINT_MSG(index) printf("%s", T(index))// Macro para imprimir uma mensagem do dicionário (sem digitação letra por letra)
+#define TYPE_MSG(index) digitar(T(index), 25) // Macro para "digitar" uma mensagem do dicionário (letra por letra)
+#define MAX(a, b) ((a) > (b) ? (a) : (b)) // Macro auxiliar para obter o maior valor (para garantir pelo menos 1 barra)
 
 #ifdef _WIN32
     #include <windows.h> // Para Sleep() no Windows
@@ -77,8 +116,6 @@ char metaFinanceiraNome[100] = "";
 int metaFinanceiraValorCentavos = 0;
 int metaFinanceiraCadastrada = 0; // 0 = false, 1 = true
 
-
-
 // --- Enumeração e Dicionários para Idiomas e Textos ---
 typedef enum {
     PT, 
@@ -112,8 +149,8 @@ const char *textos[][59] = { /*===================================[ DICIONARIO ]
         "[7] Sair",                                           // (7) Menu - Sair
         "\n+== DIARIO FINANCEIRO PESSOAL==+\n\n",             // (8) Cabecalho - Titulo
         "Descricao da transacao: ",                           // (9) Entrada - Descricao
-        "Valor da transacao (ex: 120099 para 1200.99 CAD ) ZERO || -1 para cancelar: ", // (10) Entrada - Valor
-        "Data da Transacao (dd/mm/aaaa): ",                   // (11) Data da Transacao
+        "Valor da transacao (ex: 120099 para 1200.99 CAD ) || ZERO OU -1 para cancelar: ", // (10) Entrada - Valor
+        "Data da Transacao (aaaa-mm-dd): ",                   // (11) Data da Transacao
         "Receita registrada com sucesso!\n",                  // (12) Confirmacao - Receita registrada
         "Despesa registrada com sucesso!\n",                  // (13) Confirmacao - Despesa registrada
         "Gostaria de definir uma meta financeira mensal?\n",  // (14) Pergunta - Meta financeira
@@ -133,15 +170,15 @@ const char *textos[][59] = { /*===================================[ DICIONARIO ]
         "Opcao de categoria invalida. Tente novamente.\n",    // (28) Novo: Erro de categoria invalida
         "Categoria: ",                                        // (29) NOVO: Label "Categoria" para exibicao
         "Escolha o tipo de relatorio:\n[1] Geral\n[2] Diario\n[3] Mensal\n[4] Grafico de Fluxo de Caixa\n[5] Voltar ao menu principal\nSua escolha: ", // (30) Tipo de relatorio e sub-menu de relatorios
-        "Digite a data (dd/mm/aaaa): ",                       // (31) Digite o dia
-        "Digite o mes e ano (mm/aaaa): ",                     // (32) Digite o mes e ano
+        "Digite a data no padrao ISO 8601 (aaaa-mm-dd): ",           // (31) Digite a data
+        "Digite o ano e mes no padrao ISO 8601 (aaaa-mm): ",        // (32) Digite o ano e mês
         "Nao ha transacoes para este periodo.\n",             // (33) Nao ha transacoes
-        "Relatorio Diario para %02i/%02i/%04i\n",              // (34) Titulo Relatorio Diario
-        "Relatorio Mensal para %02i/%02i/%04i\n",              // (35) Titulo Relatorio Mensal
-        "Erro na leitura da data. Formato esperado dd/mm/aaaa.\n", //(36) Erro de leitura
+        "Relatorio Diario para %04d-%02d-%02d\n",       // (34) Titulo Relatorio Diario (ANO-MES-DIA) ISO 8601
+        "Relatorio Mensal para %04d-%02d\n",            // (35) Titulo Relatorio Mensal (ANO-MES)
+        "Erro na leitura da data. Formato esperado (aaaa-mm-dd).\n", //(36) Erro de leitura
         "Erro de alocacao de memoria ao ler movimentacao!\n",     //(37)Erro de memoria
         "Valor invalido! Por favor, insira um numero inteiro valido ou ZERO/NEGATIVO para cancelar.\n", // (38) Erro - Valor inválido
-        "Data invalida! Por favor, insira uma data valida (dd/mm/aaaa).\n", // (39) Erro - Data inválida
+        "Data invalida! Por favor, insira uma data valida (aaaa-mm-dd).\n", // (39) Erro - Data inválida
         "Receitas: ",                                         // (40) Receitas Grafico
         "\nDespesas: ",                                       // (41) Despesas Grafico
         "\nSaldo: ",                                          // (42) Saldo
@@ -173,8 +210,8 @@ const char *textos[][59] = { /*===================================[ DICIONARIO ]
         "[7] Quitter",                                          // (7) Menu - Quitter
         "\n+== JOURNAL FINANCIER PERSONNEL ==+\n\n",             // (8) Titre - Journal
         "Description de la transaction : ",                     // (9) Entree - Description
-        "Montant de la transaction (ex : 120099 pour 1200.99 CAD) ZERO || -1 pour annuler : ", // (10) Entree - Montant
-        "Date de la transaction (jj/mm/aaaa) : ",               // (11) Date
+        "Montant de la transaction (ex : 120099 pour 1200.99 CAD) || ZERO ou -1 pour annuler : ", // (10) Entree - Montant
+        "Date de la transaction (aaaa-mm-jj): ",               // (11) Date
         "Revenu enregistre avec succes !\n",                    // (12) Confirmation - Revenu
         "Depense enregistree avec succes !\n",                  // (13) Confirmation - Depense
         "Souhaitez-vous vous fixer un objectif financier mensuel ?\n", // (14) Question a propos de l'Objectif
@@ -194,15 +231,15 @@ const char *textos[][59] = { /*===================================[ DICIONARIO ]
         "Option de categorie invalide. Veuillez reessayer.\n",    // (28) Erro de categoria invalida
         "Categorie : ",                                         // (29) "Categorie" para exibicao
         "Choisissez le type de rapport:\n[1] General\n[2] Quotidien\n[3] Mensuel\n[4] Graphique de Flux de Tresorerie\n[5] Retour au menu principal\nVotre choix: ", // (30) Tipo de relatorio
-        "Entrez la date (jj/mm/aaaa): ",                        // (31) Entrez le jour
-        "Entrez le mois et l'annee (mm/aaaa): ",                // (32) Entrez le mois et l'annee
+        "Entrez la date au format ISO 8601 (aaaa-mm-jj): ",  // (31) Entrez le jour
+        "Entrez l'annee et le mois au format ISO 8601 (aaaa-mm): ", // (32) Entrez l'annee et le mois
         "Aucune transaction pour cette periode.\n",             // (33) Aucune transaction
-        "Rapport quotidien pour %02i/%02i/%04i\n",              // (34) Titulo Relatorio Diario
-        "Rapport mensuel pour %02i/%02i/%04i\n",                // (35) Titulo Relatorio Mensal
-        "Erreur lors de la lecture de la date. Format attendu jj/mm/aaaa.\n", //Erreur de la lecture de la date
+        "Rapport quotidien pour %04d-%02d-%02d\n",              // (34) Titulo Relatorio Diario (ANNEE-MOIS-JOUR)
+        "Rapport mensuel pour %04d-%02d\n",                     // (35) Titulo Relatorio Mensal (ANNEE-MOIS)
+        "Erreur lors de la lecture de la date. Format attendu aaaa-mm-jj (ISO 8601).\n", //Erreur de la lecture de la date
         "Erreur d'allocation de memoire lors de la lecture du mouvement !\n", // Erreur de memoire
         "Montant invalide ! Veuillez saisir un nombre entier valide ou ZERO/NEGATIF pour annuler.\n", // (38) Erro - Montant invalide
-        "Date invalide ! Veuillez saisir une date valide (jj/mm/aaaa).\n", // (39) Erro - Date invalide
+        "Date invalide ! Veuillez saisir une date valide (aaaa-mm-jj).\n", // (39) Erro - Date invalide
         "Revenus: ",                                          // (40) Revenus Graphique
         "\nDepenses: ",                                       // (41) Depenses Graphique
         "\nSolde: ",                                          // (42) Saldo
@@ -234,8 +271,8 @@ const char *textos[][59] = { /*===================================[ DICIONARIO ]
         "[7] Exit",                                             // (7) Menu - Exit
         "\n+== PERSONAL FINANCIAL JOURNAL ==+\n\n",              // (8) Header - Title
         "Transaction description: ",                            // (9) Input - Description
-        "Transaction amount (e.g., 120099 for 1200.99 CAD) ZERO || -1 to cancel: ", // (10) Input - Amount
-        "Transaction date (dd/mm/yyyy): ",                      // (11) Date
+        "Transaction amount (e.g., 120099 for 1200.99 CAD) || ZERO or -1 to cancel: ", // (10) Input - Amount
+        "Transaction date (yyyy-mm-dd):",                      // (11) Date
         "Income successfully recorded!\n",                      // (12) Confirmation - Income
         "Expense successfully recorded!\n",                     // (13) Confirmation - Expense
         "Would you like to set a monthly financial goal?\n",    // (14) Question - Goal
@@ -255,15 +292,15 @@ const char *textos[][59] = { /*===================================[ DICIONARIO ]
         "Invalid category option. Please try again.\n",         // (28) Erro de categoria invalida
         "Category: ",                                           // (29) Label "Category" para exibicao
         "Choose report type:\n[1] General\n[2] Daily\n[3] Monthly\n[4] Cash Flow Chart\n[5] Back to main menu\nYour choice: ", // (30) Tipo de relatorio
-        "Enter day (dd/mm/yyyy): ",                             // (31) Enter day
-        "Enter month and year (mm/yyyy): ",                     // (32) Enter month and year
+        "Enter date in ISO 8601 format (yyyy-mm-dd): ",         // (31) Enter day
+        "Enter year and month in ISO 8601 format (yyyy-mm): ",  // (32) Enter year and month
         "No transactions for this period.\n",                   // (33) No transactions
-        "Daily Report for %02i/%02i/%04i\n",                    // (34) Titulo Relatorio Diario
-        "Monthly Report for %02i/%02i/%04i\n",                  // (35) Titulo Relatorio Mensal
-        "Error reading date. Expected format: dd/mm/yyyy.\n",     //(36) Error reading date
+        "Daily Report for %04d-%02d-%02d\n",                   // (34) Titulo Relatorio Diario (YEAR-MONTH-DAY)
+        "Monthly Report for %04d-%02d\n",                          // (35) Titulo Relatorio Mensal (YEAR-MONTH)
+        "Error reading date. Expected format: yyyy-mm-dd. (ISO 8601)\n",     //(36) Error reading date
         "Memory allocation error when reading movement!\n",       // (37) Memory
         "Invalid amount! Please enter a valid integer or ZERO/NEGATIVE to cancel.\n", // (38) Error - Invalid amount
-        "Invalid date! Please enter a valid date (dd/mm/yyyy).\n", // (39) Error - Invalid date
+        "Invalid date! Please enter a valid date (yyyy-mm-dd).\n", // (39) Error - Invalid date
         "Income: ",                                             // (40) Income Chart
         "\nExpenses: ",                                         // (41) Expenses Chart
         "\nCurrent balance:",                                   // (42) Saldo
@@ -285,13 +322,9 @@ const char *textos[][59] = { /*===================================[ DICIONARIO ]
         "Thank you! Your data will help us improve the application.\n" // (58) Agradecimento de consentimento EN
     }
 };
-// --- DEFINIÇÕES DE MACROS ---
-#define T(index) textos[idiomaAtual][index] // Macro para acessar o texto do dicionário
-#define PRINT_MSG(index) printf("%s", T(index))// Macro para imprimir uma mensagem do dicionário (sem digitação letra por letra)
-#define TYPE_MSG(index) digitar(T(index), 25) // Macro para "digitar" uma mensagem do dicionário (letra por letra)
-#define MAX(a, b) ((a) > (b) ? (a) : (b)) // Macro auxiliar para obter o maior valor (para garantir pelo menos 1 barra)
+
 // --- Protótipos das Funções ---
-void alterarIdioma();
+void gerenciarIdioma();
 void bufferLimpo();
 void beep();
 void carregarMovimentacoes(const char *nomeArquivo);
@@ -308,7 +341,7 @@ void gerenciarRemocaoMovimentacao();
 void gerenciarSaldoEMeta();
 void imprimirMovimentacoes(int tipoRelatorio, int dia, int mes, int ano);
 void imprimirGraficoFluxoCaixa();
-void menuRelatorios();
+void gerenciarMenuRelatorios();
 void imprimirValor(int centavos);
 void inserirMovimentacao(Movimentacao m);
 int lerEscolha();
@@ -324,10 +357,9 @@ void salvarTodasMovimentacoes(const char *nomeArquivo);
 void solicitarNovoNomeUsuario();
 void tratarOpcaoInvalida();
 
-int main() {/*******************************************[ INICIO DO MAIN *****************************************/
+int main() {/*******************************************[ INICIO DO MAIN ]*****************************************/
     int opcao;
     limparTela();
-    // ***** MODIFICADO: carregarMovimentacoes agora também carrega a meta *****
     carregarMovimentacoes("df.bin"); 
     char mensagemBoasVindasInicial[200];
     sprintf(mensagemBoasVindasInicial, T(0), nomeUsuario);
@@ -349,21 +381,20 @@ int main() {/*******************************************[ INICIO DO MAIN *******
             case 3: /*_______________________________________(Consultar Saldo)_______________________________________*/
                 gerenciarSaldoEMeta();
                 break;
-            case 4: /*__________________________________________(Gerar Relatorio)_______________________________________*/
+            case 4: /*_______________________________________(Gerar Relatorio)_______________________________________*/
                 limparTela();
-                menuRelatorios();
+                gerenciarMenuRelatorios();
                 pausarExecucao();
                 break;
             case 5: /*_______________________________________(Alterar Idiomas)_______________________________________*/
                 limparTela();
-                alterarIdioma();
+                gerenciarIdioma();
                 break;
             case 6: /*_____________________________________(Remover Movimentacao)_______________________________________*/
                 gerenciarRemocaoMovimentacao();
                 pausarExecucao();
                 break;
-            case 7: /*______________________________________________( Sair )_______________________________________*/
-                // ***** MODIFICADO: salvarTodasMovimentacoes agora também salva a meta *****
+            case 7: /*___________________________________________( Sair )_______________________________________*/
                 salvarTodasMovimentacoes("df.bin"); 
                 limparTela();
                 despedida();
@@ -375,56 +406,54 @@ int main() {/*******************************************[ INICIO DO MAIN *******
     free(lista);    // Liberar memória alocada dinamicamente
     lista = NULL;   // Medida de segurança 
     return 0;
-}/*******************************************************[ FIM DO MAIN *****************************************/
+}/*******************************************************[ FIM DO MAIN ] *****************************************/
+/*CATEGORIZAÇÃO DE FUNÇÕES 
+
+Funções Finais (Ligadas ao Menu Principal)
+
+(Funções diretamente acessadas através de um item do menu principal no main, orquestrando operações para o usuário.)
+•	main(): A função principal do programa. É o ponto de entrada e o orquestrador principal, gerenciando o ciclo de vida da aplicação: inicialização (carregamento de dados), loop principal (exibição de menu e processamento de opções) e encerramento (salvamento de dados e liberação de memória). (Corresponde ao controle geral do programa e à opção [7] Sair que encerra o loop).
+•	gerenciarIdioma(): Permite ao usuário selecionar um novo idioma para a interface do programa. Inclui lógica para solicitar consentimento de dados e um novo nome de usuário caso o idioma seja alterado para Francês ou Inglês. (Corresponde à opção [5] Alterar Idioma do menu ).
+•	gerenciarCadastroMovimentacao(char tipoMovimentacao): Controla o fluxo de cadastro de novas movimentações (receitas ou despesas). Solicita ao usuário todas as informações necessárias e valida as entradas. (Corresponde às opções [1] Cadastrar Receita e [2] Cadastrar Despesa do menu).
+•	gerenciarMenuRelatorios(): Apresenta um submenu ao usuário para que ele possa escolher o tipo de relatório financeiro que deseja gerar (geral, diário, mensal, ou gráfico de fluxo de caixa). (Corresponde à opção [4] Gerar Relatório do menu).
+•	gerenciarRemocaoMovimentacao(): Permite ao usuário remover uma movimentação existente. O usuário insere a descrição da movimentação a ser removida, e a função realiza a busca e remoção. (Corresponde à opção [6] Remover Movimentação do menu).
+•	gerenciarSaldoEMeta(): Agrupa as funcionalidades de consulta de saldo e exibição/definição de metas financeiras, oferecendo um submenu para o usuário interagir com essas opções. (Corresponde à opção [3] Consultar Saldo do menu).
+
+Funções Intermediárias
+
+(Funções que realizam algum tipo de trabalho para as funções finais, geralmente agrupando operações básicas ou realizando cálculos e manipulações de dados mais complexas.)
+•	carregarMovimentacoes(const char *nomeArquivo): Carrega todas as movimentações financeiras previamente salvas e os dados da meta financeira de um arquivo binário especificado. Implementa tratamento de erro para falhas na leitura.
+•	consultarSaldo(): Calcula o saldo total, o total de receitas e o total de despesas a partir das movimentações registradas e os exibe no console.
+•	despedida(): Exibe mensagens de despedida em todos os idiomas suportados e introduz um pequeno atraso antes que o programa seja encerrado, proporcionando uma transição suave.
+•	exibirMenuConsentimentoDados(): Apresenta uma tela de consentimento ao usuário, perguntando se ele concorda em compartilhar dados de uso anônimos. Esta funcionalidade é ativada apenas quando o idioma é Francês ou Inglês. Retorna a escolha do usuário.
+•	exibirMetaFinanceira(): Exibe os detalhes da meta financeira cadastrada, incluindo seu nome, valor e o progresso atual em relação ao saldo, acompanhado de uma barra de progresso visual.
+•	expandirLista(): Função utilitária que dobra a capacidade alocada para o vetor dinâmico lista de movimentações. É chamada quando o número de movimentações atinge a capacidade atual.
+•	imprimirGraficoFluxoCaixa(): Gera um gráfico de fluxo de caixa simplificado utilizando caracteres ASCII no console, mostrando visualmente as proporções de receitas, despesas e saldo total.
+•	imprimirMovimentacoes(int tipoRelatorio, int diaFiltro, int mesFiltro, int anoFiltro): Imprime as movimentações financeiras com base no tipo de relatório (geral, diário ou mensal) e filtros de data.
+•	inserirMovimentacao(Movimentacao m): Adiciona uma nova movimentação ao vetor dinâmico lista, expandindo-o se necessário.
+•	lerMovimentacao(char tipo): Aloca memória dinamicamente para uma nova movimentação, solicita e lê todos os detalhes da transação (valor, descrição, categoria, data) e retorna um ponteiro para a estrutura preenchida.
+•	projetarMetaFinanceira(): Permite ao usuário definir ou atualizar sua meta financeira. Após a definição, exibe o nome da meta, o valor e o progresso em relação ao saldo atual.
+•	removerMovimentacao(char desc[]): Procura e remove uma movimentação específica da lista com base na descrição fornecida.
+•	salvarTodasMovimentacoes(const char *nomeArquivo): Salva todas as movimentações financeiras, o nome do usuário e os dados da meta financeira em um arquivo binário para persistência.
+•	solicitarNovoNomeUsuario(): Solicita ao usuário que digite e armazene um novo nome para ser usado nas saudações do sistema.
+
+Funções Básicas
+
+(Funções compartilhadas com diversas outras funções de forma recursiva e recorrente no código. Geralmente lidam com operações de baixo nível, utilitários ou validações fundamentais.)
+•	beep(): Emite um bipe sonoro através do console usado para alertar o usuário sobre erros.
+•	bufferLimpo(): Limpa o buffer de entrada do teclado.
+•	dataValida(int dia, int mes, int ano): Uma função de validação que verifica se uma data fornecida (dia, mês, ano) é logicamente válida, incluindo a consideração de anos bissextos.
+•	digitar(const char *mensagem, unsigned int atraso_ms): Imprime uma mensagem caractere por caractere, simulando o efeito de digitação.
+•	imprimirValor(int centavos): Formata e imprime um valor inteiro em centavos para o formato monetário canadense (CAD), exibindo-o com duas casas decimais.
+•	lerEscolha(): Solicita e valida a escolha do usuário para continuar ou sair de uma operação.
+•	lerDataComValidacao(int *dia, int *mes, int *ano, int tipo_leitura): Lê uma data do usuário, validando o formato e a validade da data. Suporta leitura completa (dd/mm/aaaa) ou apenas mês e ano (mm/aaaa).
+•	lerValorInteiro(int mensagem_prompt_key_index, int mensagem_erro_key_index, int pode_cancelar): Lê um valor inteiro do usuário, exibe mensagens de prompt e erro conforme o dicionário, e oferece a opção de cancelar a entrada.
+•	lerStringSimples(char *buffer, int tamanho): Lê uma linha de texto do console para um buffer de caracteres, removendo o caractere de nova linha que fgets inclui.
+•	limparTela(): Executa um comando do sistema operacional (cls para Windows, clear para Unix-like) para limpar a tela do console.
+•	pausarExecucao(): Exibe uma mensagem solicitando que o usuário pressione ENTER para continuar e aguarda a entrada, mantendo a interface do console estável.
+•	tratarOpcaoInvalida(): Exibe uma mensagem de erro genérica para quando o usuário insere uma opção inválida em menus, acompanhada de um bipe.
+*/
 // --- Implementações das Funções (em ordem alfabética para organização) ---
-void alterarIdioma() {
-    char idioma[20];
-    PRINT_MSG(23); // (23) Entrada - Novo idioma
-    int leitura = scanf("%s", idioma);
-    bufferLimpo();
-    Idioma idiomaAnterior = idiomaAtual;
-    int resultadoConsentimento = 1; // 1 = pode continuar, 0 = deve sair
-
-    if (leitura != 1) {
-        tratarOpcaoInvalida();
-        return;
-    }
-    if (strcmp(idioma, "FR") == 0 || strcmp(idioma, "fr") == 0) idiomaAtual = FR;
-    else if (strcmp(idioma, "EN") == 0 || strcmp(idioma, "en") == 0) idiomaAtual = EN;
-    else if (strcmp(idioma, "PT") == 0 || strcmp(idioma, "pt") == 0) idiomaAtual = PT;
-    else {
-        tratarOpcaoInvalida();
-        return;
-    }
-    printf(T(22), idioma); // (22) Confirmacao - Idioma alterado
-
-    int solicitar_dados_e_nome = 0;
-    if (idiomaAtual == FR || idiomaAtual == EN) { // Verifica se o idioma atual é FR ou EN E se houve uma mudança de idioma
-        if (idiomaAnterior != idiomaAtual ||
-            (idiomaAnterior == FR && idiomaAtual == FR) ||
-            (idiomaAnterior == EN && idiomaAtual == EN)) {
-            solicitar_dados_e_nome = 1;
-        }
-    }
-
-    if (solicitar_dados_e_nome) {
-        resultadoConsentimento = exibirMenuConsentimentoDados();
-        if (resultadoConsentimento == 0) {
-            salvarTodasMovimentacoes("df.bin");
-            limparTela();
-            despedida();
-            exit(0);
-        }
-        solicitarNovoNomeUsuario(); // Esta linha só será alcançada se o consentimento for dado
-    }
-    
-    if (resultadoConsentimento == 0) {
-        salvarTodasMovimentacoes("df.bin");
-        limparTela();
-        despedida();
-        exit(0);
-    }
-}
 void beep() {
     printf("\a");
 }
@@ -539,7 +568,7 @@ int exibirMenuConsentimentoDados() {
         PRINT_MSG(15); // (15) "Digite [ 1 ] para SIM || Digite [ 2 ] para Sair: "
 
         while (1) {
-            if (scanf("%i", &escolhaConsentimento) != 1) {
+            if (scanf("%d", &escolhaConsentimento) != 1) {
                 bufferLimpo();
                 tratarOpcaoInvalida();
                 PRINT_MSG(15); // (15) "Digite [ 1 ] para SIM || Digite [ 2 ] para Sair: "
@@ -657,11 +686,107 @@ void gerenciarCadastroMovimentacao(char tipoMovimentacao) {
         PRINT_MSG(9); // (9) "Descricao da transacao: "
         printf("%s\n", m_ptr->descricao); 
         imprimirValor(m_ptr->valorCentavos); 
-        printf("\n%s%02i/%02i/%04i\n", T(11), m_ptr->dia, m_ptr->mes, m_ptr->ano);
+        printf("\n%s%04i-%02i-%02i\n", T(11), m_ptr->ano, m_ptr->mes, m_ptr->dia);
         printf("%s%s\n", T(29), nomesCategorias[m_ptr->categoriaMovimentacao.tipoCategoria][idiomaAtual]);
         free(m_ptr); 
         subOpcao = lerEscolha(); 
     }
+}
+
+void gerenciarIdioma() {
+    char idioma[20];
+    PRINT_MSG(23); // (23) Entrada - Novo idioma
+    int leitura = scanf("%s", idioma);
+    bufferLimpo();
+    Idioma idiomaAnterior = idiomaAtual;
+    int resultadoConsentimento = 1; // 1 = pode continuar, 0 = deve sair
+
+    if (leitura != 1) {
+        tratarOpcaoInvalida();
+        return;
+    }
+    if (strcmp(idioma, "FR") == 0 || strcmp(idioma, "fr") == 0) idiomaAtual = FR;
+    else if (strcmp(idioma, "EN") == 0 || strcmp(idioma, "en") == 0) idiomaAtual = EN;
+    else if (strcmp(idioma, "PT") == 0 || strcmp(idioma, "pt") == 0) idiomaAtual = PT;
+    else {
+        tratarOpcaoInvalida();
+        return;
+    }
+    printf(T(22), idioma); // (22) Confirmacao - Idioma alterado
+
+    int solicitar_dados_e_nome = 0;
+    if (idiomaAtual == FR || idiomaAtual == EN) { // Verifica se o idioma atual é FR ou EN E se houve uma mudança de idioma
+        if (idiomaAnterior != idiomaAtual ||
+            (idiomaAnterior == FR && idiomaAtual == FR) ||
+            (idiomaAnterior == EN && idiomaAtual == EN)) {
+            solicitar_dados_e_nome = 1;
+        }
+    }
+
+    if (solicitar_dados_e_nome) {
+        resultadoConsentimento = exibirMenuConsentimentoDados();
+        if (resultadoConsentimento == 0) {
+            salvarTodasMovimentacoes("df.bin");
+            limparTela();
+            despedida();
+            exit(0);
+        }
+        solicitarNovoNomeUsuario(); // Esta linha só será alcançada se o consentimento for dado
+    }
+    
+    if (resultadoConsentimento == 0) {
+        salvarTodasMovimentacoes("df.bin");
+        limparTela();
+        despedida();
+        exit(0);
+    }
+}
+
+void gerenciarMenuRelatorios() {
+    int subOpcao;
+    int dia = 0, mes = 0, ano = 0; 
+
+    do {
+        limparTela();
+        printf("%s", textos[idiomaAtual][30]); // (30) Tipo de relatorio e sub-menu
+        scanf("%d", &subOpcao); 
+        bufferLimpo();
+        switch (subOpcao) {
+            case 1: // Geral 
+                limparTela();
+                imprimirMovimentacoes(0, 0, 0, 0); // Tipo 0 para geral 
+                break;
+            case 2: // Diario 
+                limparTela();
+                if (!lerDataComValidacao(&dia, &mes, &ano, 1)) { 
+                    digitar(textos[idiomaAtual][24], 25); // (24) Operação cancelada.
+                    break;
+                }
+                imprimirMovimentacoes(1, dia, mes, ano); 
+                break;
+            case 3: // Mensal 
+                limparTela();
+                if (!lerDataComValidacao(&dia, &mes, &ano, 2)) { 
+                    digitar(textos[idiomaAtual][24], 25); // (24) Operação cancelada.
+                    break;
+                }
+                imprimirMovimentacoes(2, 0, mes, ano); 
+                break;
+            case 4: // Gráfico de Fluxo de Caixa 
+                limparTela();
+                imprimirGraficoFluxoCaixa();
+                break;
+            case 5: 
+                digitar(textos[idiomaAtual][24], 25); // (24) Operação cancelada.
+                break;
+            default:
+                tratarOpcaoInvalida();
+                break;
+        }
+        if (subOpcao != 5) { 
+            pausarExecucao();
+        }
+    } while (subOpcao != 5);
 }
 
 void gerenciarRemocaoMovimentacao() {
@@ -703,7 +828,7 @@ void gerenciarSaldoEMeta() {
                         "Back to Main Menu");
     
     PRINT_MSG(26); //(26) "Sua Escolha: "
-    scanf("%i", &subOpcao); 
+    scanf("%d", &subOpcao); 
     bufferLimpo(); 
 
     if (subOpcao == 1) {
@@ -756,9 +881,9 @@ void imprimirMovimentacoes(int tipoRelatorio, int diaFiltro, int mesFiltro, int 
     if (tipoRelatorio == 0) { 
         PRINT_MSG(44); // (44) Título Relatório Geral
     } else if (tipoRelatorio == 1) { 
-        printf(T(34), diaFiltro, mesFiltro, anoFiltro); 
+        printf(T(34), anoFiltro, mesFiltro, diaFiltro); 
     } else if (tipoRelatorio == 2) { 
-        printf(T(35), mesFiltro, anoFiltro); 
+        printf(T(35), anoFiltro, mesFiltro);
     }
     printf("---------------------------\n"); 
     if (total == 0 && tipoRelatorio == 0) { 
@@ -783,14 +908,14 @@ void imprimirMovimentacoes(int tipoRelatorio, int diaFiltro, int mesFiltro, int 
 
         if (imprimir) {
             if (tipoRelatorio != 0) { 
-                printf("[%02i] ", lista[willow].dia);
+                printf("[%02d] ", lista[willow].dia);
             }
             printf("[%c] %s - %s - ", 
                    lista[willow].tipo,
                    lista[willow].descricao,
                    nomesCategorias[lista[willow].categoriaMovimentacao.tipoCategoria][idiomaAtual]);
             imprimirValor(lista[willow].valorCentavos);
-            printf(" CAD - Data: %02i/%02i/%04i\n", 
+            printf(" CAD - Data: %02d/%02d/%04d\n", 
                    lista[willow].dia, lista[willow].mes, lista[willow].ano);
             transacoesEncontradas++;
         }
@@ -802,55 +927,8 @@ void imprimirMovimentacoes(int tipoRelatorio, int diaFiltro, int mesFiltro, int 
     printf("\n"); 
 }
 
-void menuRelatorios() {
-    int subOpcao;
-    int dia = 0, mes = 0, ano = 0; 
-
-    do {
-        limparTela();
-        printf("%s", textos[idiomaAtual][30]); // (30) Tipo de relatorio e sub-menu
-        scanf("%i", &subOpcao); 
-        bufferLimpo();
-        switch (subOpcao) {
-            case 1: // Geral 
-                limparTela();
-                imprimirMovimentacoes(0, 0, 0, 0); // Tipo 0 para geral 
-                break;
-            case 2: // Diario 
-                limparTela();
-                if (!lerDataComValidacao(&dia, &mes, &ano, 1)) { 
-                    digitar(textos[idiomaAtual][24], 25); // (24) Operação cancelada.
-                    break;
-                }
-                imprimirMovimentacoes(1, dia, mes, ano); 
-                break;
-            case 3: // Mensal 
-                limparTela();
-                if (!lerDataComValidacao(&dia, &mes, &ano, 2)) { 
-                    digitar(textos[idiomaAtual][24], 25); // (24) Operação cancelada.
-                    break;
-                }
-                imprimirMovimentacoes(2, 0, mes, ano); 
-                break;
-            case 4: // Gráfico de Fluxo de Caixa 
-                limparTela();
-                imprimirGraficoFluxoCaixa();
-                break;
-            case 5: 
-                digitar(textos[idiomaAtual][24], 25); // (24) Operação cancelada.
-                break;
-            default:
-                tratarOpcaoInvalida();
-                break;
-        }
-        if (subOpcao != 5) { 
-            pausarExecucao();
-        }
-    } while (subOpcao != 5);
-}
-
 void imprimirValor(int centavos) {
-    printf("$ %i.%02i CAD", centavos / 100, abs(centavos % 100)); 
+    printf("$ %d.%02d CAD", centavos / 100, abs(centavos % 100)); 
 }
 
 void inserirMovimentacao(Movimentacao m) {
@@ -876,43 +954,42 @@ int lerEscolha() {
     }
 }
 
-int lerDataComValidacao(int *dia, int *mes, int *ano, int tipo_leitura) {// Implementação otimizada da função lerDataComValidacao
-    char linha_data[20]; 
+int lerDataComValidacao(int *dia, int *mes, int *ano, int tipo_leitura) {
+    char linha_data[20];
     int d_temp, m_temp, a_temp;
     int sucesso_leitura;
 
     do {
-        if (tipo_leitura == 1 || tipo_leitura == 0) { // Relatório diário ou cadastro de movimentação (dd/mm/aaaa)
-            PRINT_MSG(31); // "Digite a data (dd/mm/aaaa): "
-            if (fgets(linha_data, sizeof(linha_data), stdin) == NULL) { // Erro na leitura (ex: EOF), considera como cancelamento
-                return 0; 
+        if (tipo_leitura == 1 || tipo_leitura == 0) { // Relatório diário ou cadastro de movimentação (aaaa-mm-dd)
+            PRINT_MSG(31); // (31)"Digite a data (aaaa-mm-dd): " (ou 11)
+            if (fgets(linha_data, sizeof(linha_data), stdin) == NULL) {
+                return 0;
             }
-            // Tenta ler 3 inteiros e o resto da string deve ser apenas '\n' ou nulo
-            sucesso_leitura = sscanf(linha_data, "%i/%i/%i", &d_temp, &m_temp, &a_temp);
-            // Verifica se leu 3 itens e se o final da string é limpo
+            // *** ALTERAÇÃO AQUI ***
+            sucesso_leitura = sscanf(linha_data, "%d-%d-%d", &a_temp, &m_temp, &d_temp);
+
             if (sucesso_leitura == 3 && dataValida(d_temp, m_temp, a_temp)) {
                 *dia = d_temp;
                 *mes = m_temp;
                 *ano = a_temp;
-                return 1; // Sucesso na leitura e validação
+                return 1;
             }
-        } else if (tipo_leitura == 2) { // Relatório mensal (mm/aaaa)
-            PRINT_MSG(32); // (32)"Digite o mes e ano (mm/aaaa): "
+        } else if (tipo_leitura == 2) { // Relatório mensal (aaaa-mm)
+            PRINT_MSG(32); //(32) "Digite o mes e ano (aaaa-mm): "
             if (fgets(linha_data, sizeof(linha_data), stdin) == NULL) {
                 return 0;
             }
-            // Tenta ler 2 inteiros e o resto da string deve ser apenas '\n' ou nulo
-            sucesso_leitura = sscanf(linha_data, "%i/%i", &m_temp, &a_temp);
-            // Para validação mensal, definimos o dia como 1
-            if (sucesso_leitura == 2 && dataValida(1, m_temp, a_temp)) {
-                *dia = 1; // Dia padrão para o mês
+            sucesso_leitura = sscanf(linha_data, "%d-%d", &a_temp, &m_temp);
+
+            if (sucesso_leitura == 2 && dataValida(1, m_temp, a_temp)) { // Dia é 1 para validação mensal
+                *dia = 1;
                 *mes = m_temp;
                 *ano = a_temp;
-                return 1; // Sucesso na leitura e validação
+                return 1;
             }
         }
-        
-        PRINT_MSG(39); //(39) "Data invalida! Por favor, insira uma data valida (dd/mm/aaaa)."
+
+        PRINT_MSG(39); // "Data invalida! Por favor, insira uma data valida (aaaa-mm-dd)."
         beep();
 
     } while (1);
@@ -973,7 +1050,7 @@ Movimentacao *lerMovimentacao(char tipo) {
     do {
         PRINT_MSG(27);
         for (int willow = 0; willow < NUM_CATEGORIAS; willow++) { 
-            printf("[%i] %s\n", willow + 1, nomesCategorias[willow][idiomaAtual]);
+            printf("[%d] %s\n", willow + 1, nomesCategorias[willow][idiomaAtual]);
         }
         PRINT_MSG(26);
         char linha_categoria[10];
@@ -1099,4 +1176,4 @@ void tratarOpcaoInvalida() {
     PRINT_MSG(20);
     beep();
 }
-//atualização 31/junho/2025
+//atualização 10/junho/2025
