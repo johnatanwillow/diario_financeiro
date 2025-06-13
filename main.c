@@ -446,7 +446,7 @@ Funções Básicas
 •	digitar(const char *mensagem, unsigned int atraso_ms): Imprime uma mensagem caractere por caractere, simulando o efeito de digitação.
 •	imprimirValor(int centavos): Formata e imprime um valor inteiro em centavos para o formato monetário canadense (CAD), exibindo-o com duas casas decimais.
 •	lerEscolha(): Solicita e valida a escolha do usuário para continuar ou sair de uma operação.
-•	lerDataComValidacao(int *dia, int *mes, int *ano, int tipo_leitura): Lê uma data do usuário, validando o formato e a validade da data. Suporta leitura completa (dd/mm/aaaa) ou apenas mês e ano (mm/aaaa).
+•	lerDataComValidacao(int *dia, int *mes, int *ano, int tipo_leitura): Lê uma data do usuário, validando o formato e a validade da data. Suporta leitura completa padro ISO 8601 (aaaa-mm-dd) ou apenas mês e ano (aaaa-mm).
 •	lerValorInteiro(int mensagem_prompt_key_index, int mensagem_erro_key_index, int pode_cancelar): Lê um valor inteiro do usuário, exibe mensagens de prompt e erro conforme o dicionário, e oferece a opção de cancelar a entrada.
 •	lerStringSimples(char *buffer, int tamanho): Lê uma linha de texto do console para um buffer de caracteres, removendo o caractere de nova linha que fgets inclui.
 •	limparTela(): Executa um comando do sistema operacional (cls para Windows, clear para Unix-like) para limpar a tela do console.
@@ -454,14 +454,8 @@ Funções Básicas
 •	tratarOpcaoInvalida(): Exibe uma mensagem de erro genérica para quando o usuário insere uma opção inválida em menus, acompanhada de um bipe.
 */
 // --- Implementações das Funções (em ordem alfabética para organização) ---
-void beep() {
-    printf("\a");
-}
-
-void bufferLimpo() {
-    int c;
-    while ((c = getchar()) != '\n' && c != EOF);
-}
+void beep() {printf("\a");}
+void bufferLimpo() {int c; while ((c = getchar()) != '\n' && c != EOF);}
 void carregarMovimentacoes(const char *nomeArquivo) {
     FILE *arquivo = fopen(nomeArquivo, "rb");
     if (!arquivo) return; 
@@ -510,8 +504,7 @@ void carregarMovimentacoes(const char *nomeArquivo) {
         }
         total = 0;
         capacidade = 0;
-    } 
-    
+    }    
     fclose(arquivo);
 }
 void consultarSaldo() {
@@ -568,7 +561,7 @@ int exibirMenuConsentimentoDados() {
         PRINT_MSG(15); // (15) "Digite [ 1 ] para SIM || Digite [ 2 ] para Sair: "
 
         while (1) {
-            if (scanf("%d", &escolhaConsentimento) != 1) {
+            if (scanf("%i", &escolhaConsentimento) != 1) {
                 bufferLimpo();
                 tratarOpcaoInvalida();
                 PRINT_MSG(15); // (15) "Digite [ 1 ] para SIM || Digite [ 2 ] para Sair: "
@@ -645,8 +638,8 @@ void exibirMetaFinanceira() {
             printf(T(57), progresso * 100); // Final da barra e porcentagem
         }
     } else {
-        printf("\n%s\n", idiomaAtual == PT ? "Nenhuma meta financeira cadastrada ainda." :
-                          idiomaAtual == FR ? "Aucun objectif financier defini pour le moment." :
+        printf("\n%s\n", idiomaAtual == PT ? "Nenhuma meta financeira cadastrada ainda." : 
+                        idiomaAtual == FR ? "Aucun objectif financier defini pour le moment." : 
                           "No financial goal set yet.");
     }
 }
@@ -713,7 +706,6 @@ void gerenciarIdioma() {
         return;
     }
     printf(T(22), idioma); // (22) Confirmacao - Idioma alterado
-
     int solicitar_dados_e_nome = 0;
     if (idiomaAtual == FR || idiomaAtual == EN) { // Verifica se o idioma atual é FR ou EN E se houve uma mudança de idioma
         if (idiomaAnterior != idiomaAtual ||
@@ -722,7 +714,6 @@ void gerenciarIdioma() {
             solicitar_dados_e_nome = 1;
         }
     }
-
     if (solicitar_dados_e_nome) {
         resultadoConsentimento = exibirMenuConsentimentoDados();
         if (resultadoConsentimento == 0) {
@@ -745,11 +736,10 @@ void gerenciarIdioma() {
 void gerenciarMenuRelatorios() {
     int subOpcao;
     int dia = 0, mes = 0, ano = 0; 
-
     do {
         limparTela();
         printf("%s", textos[idiomaAtual][30]); // (30) Tipo de relatorio e sub-menu
-        scanf("%d", &subOpcao); 
+        scanf("%i", &subOpcao); 
         bufferLimpo();
         switch (subOpcao) {
             case 1: // Geral 
@@ -828,7 +818,7 @@ void gerenciarSaldoEMeta() {
                         "Back to Main Menu");
     
     PRINT_MSG(26); //(26) "Sua Escolha: "
-    scanf("%d", &subOpcao); 
+    scanf("%i", &subOpcao); 
     bufferLimpo(); 
 
     if (subOpcao == 1) {
@@ -915,8 +905,8 @@ void imprimirMovimentacoes(int tipoRelatorio, int diaFiltro, int mesFiltro, int 
                    lista[willow].descricao,
                    nomesCategorias[lista[willow].categoriaMovimentacao.tipoCategoria][idiomaAtual]);
             imprimirValor(lista[willow].valorCentavos);
-            printf(" CAD - Data: %02d/%02d/%04d\n", 
-                   lista[willow].dia, lista[willow].mes, lista[willow].ano);
+            printf(" - Data: %04d-%02d-%02d\n", 
+                   lista[willow].ano, lista[willow].mes, lista[willow].dia);
             transacoesEncontradas++;
         }
     }
@@ -928,7 +918,7 @@ void imprimirMovimentacoes(int tipoRelatorio, int diaFiltro, int mesFiltro, int 
 }
 
 void imprimirValor(int centavos) {
-    printf("$ %d.%02d CAD", centavos / 100, abs(centavos % 100)); 
+    printf("$ %i.%02i CAD", centavos / 100, abs(centavos % 100)); 
 }
 
 void inserirMovimentacao(Movimentacao m) {
@@ -965,9 +955,7 @@ int lerDataComValidacao(int *dia, int *mes, int *ano, int tipo_leitura) {
             if (fgets(linha_data, sizeof(linha_data), stdin) == NULL) {
                 return 0;
             }
-            // *** ALTERAÇÃO AQUI ***
-            sucesso_leitura = sscanf(linha_data, "%d-%d-%d", &a_temp, &m_temp, &d_temp);
-
+            sucesso_leitura = sscanf(linha_data, "%i-%i-%i", &a_temp, &m_temp, &d_temp);
             if (sucesso_leitura == 3 && dataValida(d_temp, m_temp, a_temp)) {
                 *dia = d_temp;
                 *mes = m_temp;
@@ -979,8 +967,7 @@ int lerDataComValidacao(int *dia, int *mes, int *ano, int tipo_leitura) {
             if (fgets(linha_data, sizeof(linha_data), stdin) == NULL) {
                 return 0;
             }
-            sucesso_leitura = sscanf(linha_data, "%d-%d", &a_temp, &m_temp);
-
+            sucesso_leitura = sscanf(linha_data, "%i-%i", &a_temp, &m_temp);
             if (sucesso_leitura == 2 && dataValida(1, m_temp, a_temp)) { // Dia é 1 para validação mensal
                 *dia = 1;
                 *mes = m_temp;
@@ -988,8 +975,7 @@ int lerDataComValidacao(int *dia, int *mes, int *ano, int tipo_leitura) {
                 return 1;
             }
         }
-
-        PRINT_MSG(39); // "Data invalida! Por favor, insira uma data valida (aaaa-mm-dd)."
+        PRINT_MSG(39); // (39) Data invalida! Por favor, insira uma data valida (aaaa-mm-dd)."
         beep();
 
     } while (1);
@@ -1011,7 +997,7 @@ int lerValorInteiro(int mensagem_prompt_key_index, int mensagem_erro_key_index, 
         if (leitura != 1) { // Não conseguiu ler um número inteiro
             PRINT_MSG(mensagem_erro_key_index);
             beep();
-        } else if (pode_cancelar && (valor == 0 || valor == -1)) {
+        } else if (pode_cancelar && (valor == 0 || valor <= -1)) {
             return -999999; // Retorna um valor específico para indicar cancelamento
         } else {
             return valor;
@@ -1050,7 +1036,7 @@ Movimentacao *lerMovimentacao(char tipo) {
     do {
         PRINT_MSG(27);
         for (int willow = 0; willow < NUM_CATEGORIAS; willow++) { 
-            printf("[%d] %s\n", willow + 1, nomesCategorias[willow][idiomaAtual]);
+            printf("[%i] %s\n", willow + 1, nomesCategorias[willow][idiomaAtual]);
         }
         PRINT_MSG(26);
         char linha_categoria[10];
@@ -1075,17 +1061,11 @@ Movimentacao *lerMovimentacao(char tipo) {
     m->tipo = tipo;
     return m;
 }
-
-void pausarExecucao() {
-    TYPE_MSG(16);
-    getchar();
-}
-
+void pausarExecucao() {TYPE_MSG(16); getchar();}
 void projetarMetaFinanceira() {
     int r = 0, d = 0;
     char tempNomeMeta[100];
     int tempMetaValor;
-
     PRINT_MSG(47);
     PRINT_MSG(48);
     lerStringSimples(tempNomeMeta, sizeof(tempNomeMeta)); 
@@ -1104,7 +1084,6 @@ void projetarMetaFinanceira() {
     PRINT_MSG(51);
     imprimirValor(metaFinanceiraValorCentavos);
     PRINT_MSG(52);
-
     if (saldo >= metaFinanceiraValorCentavos) {
         PRINT_MSG(53);
         PRINT_MSG(54);
@@ -1123,7 +1102,6 @@ void projetarMetaFinanceira() {
         if (progresso > 1.0) progresso = 1.0;
         int largura = 50;
         int preenchido = (int)(progresso * largura);
-
         PRINT_MSG(56);
         for (int willow = 0; willow < largura; willow++) { 
             if (willow < preenchido) 
@@ -1172,8 +1150,5 @@ void solicitarNovoNomeUsuario() {
     }
     lerStringSimples(nomeUsuario, sizeof(nomeUsuario)); 
 }
-void tratarOpcaoInvalida() {
-    PRINT_MSG(20);
-    beep();
-}
-//atualização 10/junho/2025
+void tratarOpcaoInvalida() { PRINT_MSG(20); beep();}
+//ultima atualização: 12/junho/2025
