@@ -1,30 +1,27 @@
-/*******************************************************************************
- * PROJETO FINAL: DIÁRIO FINANCEIRO PESSOAL (MVP)
+/*wwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwww [DOCUMENTACAO DO CODIGO] wwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwww
+ * PROJETO FINAL: DIÁRIO FINANCEIRO PESSOAL (MVP - Produto Mínimo Viável)
  *
  * DESCRIÇÃO:
  * Uma aplicação de console desenvolvida em C para o gerenciamento de finanças
  * pessoais, permitindo registro de receitas/despesas, consulta de saldo,
  * geração de relatórios e definição de metas. O sistema é projetado para
- * ser robusto, modular e aderente a boas práticas de programação.
- *
- * DESENVOLVEDORES:
- * GABRIEL DE MELO
+ * ser robusto, modular e aderente a boas práticas de programação. 
+ * Este é o nosso MVP, uma versão inicial, com as funcionalidades essenciais para 
+ * gerenciar finanças pessoais (registro de receitas/despesas, consulta de saldo, 
+ * relatórios, metas), sem todas as características que um sistema financeiro complexo
+ *  poderia ter. 
+ * Isso permite validar a ideia e a usabilidade antes de investir em um desenvolvimento mais extenso
+ * * DESENVOLVEDORES:
  * JOHNATAN WILLOW DIAS DE ANDRADE
  * MATHEUS GOMES RODRIGUES
  * NICOLE DOS SANTOS CASSIANO
  *
- * DISCIPLINA: Introdução à Programação – 2025/1
- * INSTITUIÇÃO: Universidade Federal de Goiás (UFG) - Instituto de Informática (INF)
- * PROFESSOR: Hugo Marciano de Melo (marciano@ufg.br)
- *
  * DATA DE CRIAÇÃO: 27 de março de 2025
- * ÚLTIMA ATUALIZAÇÃO: 10 de junho de 2025
- * REPOSITÓRIO DO CÓDIGO: https://github.com/johnatanwillow/diario_financeiro
- *
+ * ÚLTIMA ATUALIZAÇÃO: 12 de junho de 2025
+ * REPOSITÓRIO DO CÓDIGO: https://github.com/johnatanwillow/diario_financeiro *
  * +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
  * - ESTRUTURA E FUNCIONALIDADES PRINCIPAIS (FLUXO)
  * 1️⃣ INÍCIO: Carregamento automático de dados financeiros persistidos.
- *
  * 2️⃣ MENU PRINCIPAL: O usuário é guiado pelas seguintes opções:
  * [1] Cadastrar Receita
  * [2] Cadastrar Despesa
@@ -33,7 +30,6 @@
  * [5] Alterar Idioma
  * [6] Remover Movimentação
  * [7] Sair
- *
  * 3️⃣ PROCESSAMENTO DAS OPÇÕES:
  * - [1] ou [2] ➜ Solicita e registra transações (data, tipo, valor, descrição, categoria)
  * - [3] ➜ Calcula e exibe o saldo financeiro, além de gerenciar/exibir metas financeiras.
@@ -42,14 +38,12 @@
  * inclui lógica para solicitar consentimento de dados anônimos e novo nome de usuário
  * (especialmente para idiomas canadenses, conforme legislação local).
  * - [6] ➜ Remove uma movimentação específica baseada em sua descrição.
- *
  * 4️⃣ ENCERRAMENTO:
  * - [7] ➜ Salva todos os dados em arquivo binário e encerra o programa após um breve delay (1 segundo).
- *
  * +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
  * - DESTAQUES DE DESIGN E CONFORMIDADE
  *
- * ● PERSISTÊNCIA DE DADOS: Todas as transações e metas são salvas em arquivo binário (df.bin)
+ * ● PERSISTÊNCIA DE DADOS: Todas as transações e metas são salvas em arquivo binário (alef.bin)
  * e carregadas automaticamente, garantindo a integridade dos dados. (✓)
  * ● REQUISITOS TÉCNICOS: Implementado em C, com uso obrigatório de structs, vetores,
  * arquivos binários e ponteiros. O código é modularizado e interage via console. (✓)
@@ -64,8 +58,7 @@
  * ● REUTILIZAÇÃO DE CÓDIGO: Uso de funções auxiliares e macros para otimizar o desenvolvimento.
  * ● CRIATIVIDADE E USABILIDADE: Suporte multilíngue, efeito de "digitação" de mensagens,
  * gerenciamento de meta financeira com barra de progresso visual e gráficos ASCII.
- *
- *******************************************************************************/
+ wwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwww*/
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -111,7 +104,7 @@ typedef struct {
 // --- Variáveis Globais ---
 Movimentacao *lista = NULL;
 int capacidade = 0, total = 0;
-char nomeUsuario[50] = "Filipe"; // Nome inicial padrão
+char nomeUsuario[50] = "Filipe"; /* Filipe é uma persona. Seu propósito é ser um "usuário típico" com nome, idade e objetivos, ajudando os desenvolvedores a compreenderem profundamente as necessidades e comportamentos do público-alvo de um produto ou serviço. É uma ferramenta essencial para tomada de decisões focadas no usuário. Neste projeto ele é o idealizador, o criador e o usuário do Diario Financeiro Pessoal*/
 char metaFinanceiraNome[100] = "";
 int metaFinanceiraValorCentavos = 0;
 int metaFinanceiraCadastrada = 0; // 0 = false, 1 = true
@@ -137,7 +130,7 @@ const char *nomesCategorias[NUM_CATEGORIAS][3] = {
     {"Investimento", "Investissement", "Investment"},    // CAT_INVESTIMENTO
     {"Presente", "Cadeau", "Gift"}                       // CAT_PRESENTE
 };
-const char *textos[][59] = { /*===================================[ DICIONARIO ]===================================*/
+const char *textos[][60] = { /*ooooooooooooooooooooooooooooooooooooo[ DICIONARIO ]ooooooooooooooooooooooooooooooooooooooooooooooo*/
     { // PT - Portugues Brasileiro (indice 0)
         "Bem-vindo, %s\nEu sou Alef e este eh o seu DIARIO FINANCEIRO PESSOAL em Canadian Dollar.\n \t \t Escolha a opcao desejada abaixo\n \t MENU PRINCIPAL", // (0) Boas-vindas
         "[1] Cadastrar Receita",                              // (1) Menu - Receita
@@ -197,7 +190,8 @@ const char *textos[][59] = { /*===================================[ DICIONARIO ]
         "Faltam: ",                                           // (55) Exibe o valor restante para a meta
         "\n\n\tProgresso:\n\t[",                              // (56) Título da barra de progresso
         "] %.0f%%\n",                                         // (57) Final da barra de progresso e porcentagem
-        "Obrigado! Seus dados nos ajudarao a melhorar o aplicativo.\n" // (58) Agradecimento de consentimento PT
+        "Obrigado! Seus dados nos ajudarao a melhorar o aplicativo.\n", // (58) Agradecimento de consentimento PT
+        "Por favor, digite seu nome: " // (59) Por favor, digite seu nome:
     },
     { // FR - Quebecois (pas d'accent) (indice 1)
         "Salut, %s\nJe suis Alef et voici votre JOURNAL FINANCIER PERSONNEL en dollar canadien.\n \t \t Veuillez choisir une option ci-dessous\n \t MENU PRINCIPAL", // (0) Bienvenue
@@ -258,7 +252,8 @@ const char *textos[][59] = { /*===================================[ DICIONARIO ]
         "Il manque : ",                                         // (55) Exibe o valor restante para a meta
         "\n\n\tProgression :\n\t[",                              // (56) Título da barra de progresso
         "] %.0f%%\n",                                           // (57) Final da barra de progresso e porcentagem
-        "Merci beaucoup! Vos donnees nous aiderons a ameliorar l'application.\n" // (58) Agradecimento de consentimento FR
+        "Merci beaucoup! Vos donnees nous aiderons a ameliorar l'application.\n", // (58) Agradecimento de consentimento FR
+         "Veuillez entrer votre nom: " // (59)Veuillez entrer votre nom: "
     },
     { // EN - Canadian English (indice 2)
         "Hello, %s\nI am Alef and this is your PERSONAL FINANCIAL JOURNAL in Canadian Dollars.\n \t \t Please choose an option below\n \t MAIN MENU", // (0) Welcome
@@ -319,7 +314,8 @@ const char *textos[][59] = { /*===================================[ DICIONARIO ]
         "Remaining: ",                                          // (55) Exibe o valor restante para a meta
         "\n\n\tProgresso:\n\t[",                                 // (56) Título da barra de progresso
         "] %.0f%%\n",                                           // (57) Final da barra de progresso e porcentagem
-        "Thank you! Your data will help us improve the application.\n" // (58) Agradecimento de consentimento EN
+        "Thank you! Your data will help us improve the application.\n", // (58) Agradecimento de consentimento EN
+        "Please enter your name: "                              // (60) Please enter your name: 
     }
 };
 
@@ -360,7 +356,7 @@ void tratarOpcaoInvalida();
 int main() {/*******************************************[ INICIO DO MAIN ]*****************************************/
     int opcao;
     limparTela();
-    carregarMovimentacoes("df.bin"); 
+    carregarMovimentacoes("alef.bin"); 
     char mensagemBoasVindasInicial[200];
     sprintf(mensagemBoasVindasInicial, T(0), nomeUsuario);
     digitar(mensagemBoasVindasInicial, 25);
@@ -382,21 +378,16 @@ int main() {/*******************************************[ INICIO DO MAIN ]******
                 gerenciarSaldoEMeta();
                 break;
             case 4: /*_______________________________________(Gerar Relatorio)_______________________________________*/
-                limparTela();
                 gerenciarMenuRelatorios();
-                pausarExecucao();
                 break;
             case 5: /*_______________________________________(Alterar Idiomas)_______________________________________*/
-                limparTela();
                 gerenciarIdioma();
                 break;
             case 6: /*_____________________________________(Remover Movimentacao)_______________________________________*/
                 gerenciarRemocaoMovimentacao();
-                pausarExecucao();
                 break;
-            case 7: /*___________________________________________( Sair )_______________________________________*/
-                salvarTodasMovimentacoes("df.bin"); 
-                limparTela();
+            case 7: /*___________________________________________( Sair )______________________________________________*/
+                salvarTodasMovimentacoes("alef.bin"); 
                 despedida();
                 break;
             default:
@@ -407,11 +398,9 @@ int main() {/*******************************************[ INICIO DO MAIN ]******
     lista = NULL;   // Medida de segurança 
     return 0;
 }/*******************************************************[ FIM DO MAIN ] *****************************************/
-/*CATEGORIZAÇÃO DE FUNÇÕES 
+/*NNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNN ( CATEGORIZAÇÃO DE FUNÇÕES ) NNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNN
 
-Funções Finais (Ligadas ao Menu Principal)
-
-(Funções diretamente acessadas através de um item do menu principal no main, orquestrando operações para o usuário.)
+Funções Finais (Ligadas ao Menu Principal >> Funções diretamente acessadas através de um item do menu principal no main, orquestrando operações para o usuário.)
 •	main(): A função principal do programa. É o ponto de entrada e o orquestrador principal, gerenciando o ciclo de vida da aplicação: inicialização (carregamento de dados), loop principal (exibição de menu e processamento de opções) e encerramento (salvamento de dados e liberação de memória). (Corresponde ao controle geral do programa e à opção [7] Sair que encerra o loop).
 •	gerenciarIdioma(): Permite ao usuário selecionar um novo idioma para a interface do programa. Inclui lógica para solicitar consentimento de dados e um novo nome de usuário caso o idioma seja alterado para Francês ou Inglês. (Corresponde à opção [5] Alterar Idioma do menu ).
 •	gerenciarCadastroMovimentacao(char tipoMovimentacao): Controla o fluxo de cadastro de novas movimentações (receitas ou despesas). Solicita ao usuário todas as informações necessárias e valida as entradas. (Corresponde às opções [1] Cadastrar Receita e [2] Cadastrar Despesa do menu).
@@ -419,9 +408,7 @@ Funções Finais (Ligadas ao Menu Principal)
 •	gerenciarRemocaoMovimentacao(): Permite ao usuário remover uma movimentação existente. O usuário insere a descrição da movimentação a ser removida, e a função realiza a busca e remoção. (Corresponde à opção [6] Remover Movimentação do menu).
 •	gerenciarSaldoEMeta(): Agrupa as funcionalidades de consulta de saldo e exibição/definição de metas financeiras, oferecendo um submenu para o usuário interagir com essas opções. (Corresponde à opção [3] Consultar Saldo do menu).
 
-Funções Intermediárias
-
-(Funções que realizam algum tipo de trabalho para as funções finais, geralmente agrupando operações básicas ou realizando cálculos e manipulações de dados mais complexas.)
+Funções Intermediárias (Funções que realizam algum tipo de trabalho para as funções finais, geralmente agrupando operações básicas ou realizando cálculos e manipulações de dados mais complexas.)
 •	carregarMovimentacoes(const char *nomeArquivo): Carrega todas as movimentações financeiras previamente salvas e os dados da meta financeira de um arquivo binário especificado. Implementa tratamento de erro para falhas na leitura.
 •	consultarSaldo(): Calcula o saldo total, o total de receitas e o total de despesas a partir das movimentações registradas e os exibe no console.
 •	despedida(): Exibe mensagens de despedida em todos os idiomas suportados e introduz um pequeno atraso antes que o programa seja encerrado, proporcionando uma transição suave.
@@ -437,9 +424,8 @@ Funções Intermediárias
 •	salvarTodasMovimentacoes(const char *nomeArquivo): Salva todas as movimentações financeiras, o nome do usuário e os dados da meta financeira em um arquivo binário para persistência.
 •	solicitarNovoNomeUsuario(): Solicita ao usuário que digite e armazene um novo nome para ser usado nas saudações do sistema.
 
-Funções Básicas
+Funções Básicas (Funções compartilhadas com diversas outras funções de forma recursiva e recorrente no código. Geralmente lidam com operações de baixo nível, utilitários ou validações fundamentais.)
 
-(Funções compartilhadas com diversas outras funções de forma recursiva e recorrente no código. Geralmente lidam com operações de baixo nível, utilitários ou validações fundamentais.)
 •	beep(): Emite um bipe sonoro através do console usado para alertar o usuário sobre erros.
 •	bufferLimpo(): Limpa o buffer de entrada do teclado.
 •	dataValida(int dia, int mes, int ano): Uma função de validação que verifica se uma data fornecida (dia, mês, ano) é logicamente válida, incluindo a consideração de anos bissextos.
@@ -451,8 +437,7 @@ Funções Básicas
 •	lerStringSimples(char *buffer, int tamanho): Lê uma linha de texto do console para um buffer de caracteres, removendo o caractere de nova linha que fgets inclui.
 •	limparTela(): Executa um comando do sistema operacional (cls para Windows, clear para Unix-like) para limpar a tela do console.
 •	pausarExecucao(): Exibe uma mensagem solicitando que o usuário pressione ENTER para continuar e aguarda a entrada, mantendo a interface do console estável.
-•	tratarOpcaoInvalida(): Exibe uma mensagem de erro genérica para quando o usuário insere uma opção inválida em menus, acompanhada de um bipe.
-*/
+•	tratarOpcaoInvalida(): Exibe uma mensagem de erro genérica para quando o usuário insere uma opção inválida em menus, acompanhada de um bipe.NNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNN*/
 // --- Implementações das Funções (em ordem alfabética para organização) ---
 void beep() {printf("\a");}
 void bufferLimpo() {int c; while ((c = getchar()) != '\n' && c != EOF);}
@@ -467,7 +452,7 @@ void carregarMovimentacoes(const char *nomeArquivo) {
     total = 0; // Resetar total também, para começar limpo
     
     if (fread(nomeUsuario, sizeof(nomeUsuario), 1, arquivo) != 1) { 
-        strcpy(nomeUsuario, "Filipe"); // Se falhar a leitura do nome, assume padrão
+        strcpy(nomeUsuario, "Filipe"); 
     }
     if (fread(metaFinanceiraNome, sizeof(metaFinanceiraNome), 1, arquivo) != 1 ||
         fread(&metaFinanceiraValorCentavos, sizeof(metaFinanceiraValorCentavos), 1, arquivo) != 1 ||
@@ -532,6 +517,7 @@ int dataValida(int dia, int mes, int ano) {
     return 1;
 }
 void despedida() {
+    limparTela();
     PRINT_MSG(25); // (25) Aguarde
 #ifdef _WIN32
     Sleep(1000); // 1 segundo para Windows 
@@ -556,32 +542,33 @@ void digitar(const char *mensagem, unsigned int atraso_ms) {
 
 int exibirMenuConsentimentoDados() {
     int escolhaConsentimento;
-    if (idiomaAtual == FR || idiomaAtual == EN) {
-        TYPE_MSG(43); // (43) Pergunta de Consentimento
-        PRINT_MSG(15); // (15) "Digite [ 1 ] para SIM || Digite [ 2 ] para Sair: "
+    // LINHA REMOVIDA: if (idiomaAtual == FR || idiomaAtual == EN) {
+    
+    TYPE_MSG(43); // (43) Pergunta de Consentimento 
+    PRINT_MSG(15); // (15) "Digite [ 1 ] para SIM || Digite [ 2 ] para Sair: "
 
-        while (1) {
-            if (scanf("%i", &escolhaConsentimento) != 1) {
-                bufferLimpo();
-                tratarOpcaoInvalida();
-                PRINT_MSG(15); // (15) "Digite [ 1 ] para SIM || Digite [ 2 ] para Sair: "
-                continue; // Volta para o início do loop. 
-            }
+    while (1) {
+        if (scanf("%i", &escolhaConsentimento) != 1) {
             bufferLimpo();
-            if (escolhaConsentimento == 1 || escolhaConsentimento == 2) {
-                break; // Entrada válida, sai do loop 
-            } else {
-                tratarOpcaoInvalida();
-                PRINT_MSG(15); // (15) "Digite [ 1 ] para SIM || Digite [ 2 ] para Sair: "
-            }
+            tratarOpcaoInvalida();
+            PRINT_MSG(15); 
+            continue; 
         }
-        if (escolhaConsentimento == 1) { // Se o usuário concordar 
-            printf("\n");
-            TYPE_MSG(58); // (58) Agradecimento de consentimento
-            return 1; // Retorna 1 para indicar que o programa pode continuar 
-        } else return 0; // Retorna 0 para indicar que o programa deve sair 
+        bufferLimpo();
+        if (escolhaConsentimento == 1 || escolhaConsentimento == 2) {
+            break; 
+        } else {
+            tratarOpcaoInvalida();
+            PRINT_MSG(15); 
+        }
     }
-    return 1;
+    if (escolhaConsentimento == 1) { 
+        printf("\n");
+        TYPE_MSG(58); // (58) Agradecimento de consentimento 
+        return 1; 
+    } else {
+        return 0; 
+    }
 }
 
 void exibirMenuPrincipal() {
@@ -653,7 +640,7 @@ void expandirLista() {
     }
     lista = novaLista;
 }
-
+/*ooooooooooooooooooooooooooooooooooooooooooooooo[GERÊNCIA DE FUNÇOES FINAIS]ooooooooooooooooooooooooooooooooooooooooooooooo*/
 void gerenciarCadastroMovimentacao(char tipoMovimentacao) {
     int subOpcao = 1; 
     char mensagemConfirmacao[50]; 
@@ -673,8 +660,8 @@ void gerenciarCadastroMovimentacao(char tipoMovimentacao) {
         }
 
         digitar(mensagemConfirmacao, 25); 
-
         inserirMovimentacao(*m_ptr); 
+        salvarTodasMovimentacoes("alef.bin");
 
         PRINT_MSG(9); // (9) "Descricao da transacao: "
         printf("%s\n", m_ptr->descricao); 
@@ -687,17 +674,15 @@ void gerenciarCadastroMovimentacao(char tipoMovimentacao) {
 }
 
 void gerenciarIdioma() {
+    limparTela();
     char idioma[20];
     PRINT_MSG(23); // (23) Entrada - Novo idioma
     int leitura = scanf("%s", idioma);
     bufferLimpo();
-    Idioma idiomaAnterior = idiomaAtual;
-    int resultadoConsentimento = 1; // 1 = pode continuar, 0 = deve sair
-
     if (leitura != 1) {
         tratarOpcaoInvalida();
         return;
-    }
+    }    // Atualiza o idioma atual
     if (strcmp(idioma, "FR") == 0 || strcmp(idioma, "fr") == 0) idiomaAtual = FR;
     else if (strcmp(idioma, "EN") == 0 || strcmp(idioma, "en") == 0) idiomaAtual = EN;
     else if (strcmp(idioma, "PT") == 0 || strcmp(idioma, "pt") == 0) idiomaAtual = PT;
@@ -705,31 +690,17 @@ void gerenciarIdioma() {
         tratarOpcaoInvalida();
         return;
     }
-    printf(T(22), idioma); // (22) Confirmacao - Idioma alterado
-    int solicitar_dados_e_nome = 0;
-    if (idiomaAtual == FR || idiomaAtual == EN) { // Verifica se o idioma atual é FR ou EN E se houve uma mudança de idioma
-        if (idiomaAnterior != idiomaAtual ||
-            (idiomaAnterior == FR && idiomaAtual == FR) ||
-            (idiomaAnterior == EN && idiomaAtual == EN)) {
-            solicitar_dados_e_nome = 1;
-        }
-    }
-    if (solicitar_dados_e_nome) {
-        resultadoConsentimento = exibirMenuConsentimentoDados();
+    printf(T(22), idioma); // Confirmation - Language
+
+    if (idiomaAtual == PT || idiomaAtual == FR || idiomaAtual == EN) { 
+        int resultadoConsentimento = exibirMenuConsentimentoDados();
         if (resultadoConsentimento == 0) {
-            salvarTodasMovimentacoes("df.bin");
-            limparTela();
+            salvarTodasMovimentacoes("alef.bin");
             despedida();
             exit(0);
         }
-        solicitarNovoNomeUsuario(); // Esta linha só será alcançada se o consentimento for dado
-    }
-    
-    if (resultadoConsentimento == 0) {
-        salvarTodasMovimentacoes("df.bin");
-        limparTela();
-        despedida();
-        exit(0);
+        solicitarNovoNomeUsuario();
+        salvarTodasMovimentacoes("alef.bin"); // Salva o nome do usuário imediatamente
     }
 }
 
@@ -793,11 +764,12 @@ void gerenciarRemocaoMovimentacao() {
         if (strlen(desc_para_remover) == 0) 
             continue;
 
-        if (removerMovimentacao(desc_para_remover)) 
+        if (removerMovimentacao(desc_para_remover)){
             TYPE_MSG(18); // (18) "Movimentacao removida com sucesso."
-        else
+            salvarTodasMovimentacoes("alef.bin");
+        }else {
             PRINT_MSG(19); // (19) "Nenhum registro com essa descricao encontrado."
-
+        }
         pausarExecucao();
     }
 }
@@ -830,7 +802,7 @@ void gerenciarSaldoEMeta() {
     }
     pausarExecucao(); 
 }
-
+/*********************************************************************************************************************************** */
 void imprimirGraficoFluxoCaixa() {
     int receita_total = 0, despesa_total = 0;
     for (int willow = 0; willow < total; willow++) { 
@@ -1080,6 +1052,7 @@ void projetarMetaFinanceira() {
     strcpy(metaFinanceiraNome, tempNomeMeta);
     metaFinanceiraValorCentavos = tempMetaValor;
     metaFinanceiraCadastrada = 1; 
+    salvarTodasMovimentacoes("alef.bin");
     printf(T(50), metaFinanceiraNome);
     PRINT_MSG(51);
     imprimirValor(metaFinanceiraValorCentavos);
@@ -1140,15 +1113,10 @@ void salvarTodasMovimentacoes(const char *nomeArquivo) {
     }
     fclose(arquivo); 
 }
-
 void solicitarNovoNomeUsuario() {
-    printf("\n"); 
-    if (idiomaAtual == FR) { 
-        digitar("Veuillez entrer votre nom: ", 25); 
-    } else { 
-        digitar("Please enter your name: ", 25); 
-    }
-    lerStringSimples(nomeUsuario, sizeof(nomeUsuario)); 
+    printf("\n");
+    TYPE_MSG(59); // (59)"Por favor, digite seu nome: "
+    lerStringSimples(nomeUsuario, sizeof(nomeUsuario));
 }
 void tratarOpcaoInvalida() { PRINT_MSG(20); beep();}
 //ultima atualização: 12/junho/2025
