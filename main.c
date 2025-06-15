@@ -1,7 +1,6 @@
 /*wwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwww [DOCUMENTACAO DO CODIGO] wwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwww
  * PROJETO FINAL: DIÁRIO FINANCEIRO PESSOAL (MVP - Produto Mínimo Viável)
- *
- * DESCRIÇÃO:
+ * * DESCRIÇÃO:
  * Uma aplicação de console desenvolvida em C para o gerenciamento de finanças
  * pessoais, permitindo registro de receitas/despesas, consulta de saldo,
  * geração de relatórios e definição de metas. O sistema é projetado para
@@ -65,7 +64,7 @@
 #include <math.h> 
 
 // --- DEFINIÇÕES DE MACROS ---
-#define T(index) textos[idiomaAtual][index] // Macro para acessar o texto do dicionário
+#define T(index) dicionario[idiomaAtual][index] // Macro para acessar o texto do dicionário
 #define PRINT_MSG(index) printf("%s", T(index))// Macro para imprimir uma mensagem do dicionário (sem digitação letra por letra)
 #define TYPE_MSG(index) digitar(T(index), 25) // Macro para "digitar" uma mensagem do dicionário (letra por letra)
 #define MAX(a, b) ((a) > (b) ? (a) : (b)) // Macro auxiliar para obter o maior valor (para garantir pelo menos 1 barra)
@@ -91,15 +90,15 @@ typedef enum {
 } CategoriaValida;
 
 typedef struct {
-    CategoriaValida tipoCategoria;
+    CategoriaValida tipoCategoria; 
 } Categoria;
 // --- Estrutura de Movimentação ---
-typedef struct {
-    int valorCentavos;
-    char descricao[100];
-    int dia, mes, ano; 
-    char tipo; // 'R' para Receita, 'D' para Despesa
-    Categoria categoriaMovimentacao; 
+typedef struct { // 3 bytes de padding 
+    int valorCentavos;  // 1 * 4 bytes = 4 bytes
+    char descricao[100]; // 100 * 1 byte = 100 bytes
+    int dia, mes, ano; // 3 * 4 bytes = 12 bytes
+    char tipo; // 'R' para Receita, 'D' para Despesa -> 1 byte
+    Categoria categoriaMovimentacao; // 1 * sizeof(int) = 4 bytes
 } Movimentacao;
 // --- Variáveis Globais ---
 Movimentacao *lista = NULL;
@@ -109,7 +108,7 @@ char metaFinanceiraNome[100] = "";
 int metaFinanceiraValorCentavos = 0;
 int metaFinanceiraCadastrada = 0; // 0 = false, 1 = true
 
-// --- Enumeração e Dicionários para Idiomas e Textos ---
+// --- Enumeração e Dicionários para Idiomas e Dicionario ---
 typedef enum {
     PT, 
     FR, 
@@ -120,7 +119,7 @@ Idioma idiomaAtual = PT;
 const char *nomesCategorias[NUM_CATEGORIAS][3] = {
     // PT          FR          EN
     {"Alimentacao", "Alimentation", "Food"},             // CAT_ALIMENTACAO
-    {"Transporte", "Transport", "Transportation"},      // CAT_TRANSPORTE
+    {"Transporte", "Transport", "Transportation"},       // CAT_TRANSPORTE
     {"Moradia", "Logement", "Housing"},                  // CAT_MORADIA
     {"Educacao", "Education", "Education"},              // CAT_EDUCACAO
     {"Saude", "Sante", "Health"},                        // CAT_SAUDE
@@ -130,192 +129,192 @@ const char *nomesCategorias[NUM_CATEGORIAS][3] = {
     {"Investimento", "Investissement", "Investment"},    // CAT_INVESTIMENTO
     {"Presente", "Cadeau", "Gift"}                       // CAT_PRESENTE
 };
-const char *textos[][60] = { /*ooooooooooooooooooooooooooooooooooooo[ DICIONARIO ]ooooooooooooooooooooooooooooooooooooooooooooooo*/
+const char *dicionario[][60] = { /*ooooooooooooooooooooooooooooooooooooo[ DICIONARIO ]ooooooooooooooooooooooooooooooooooooooooooooooo*/
     { // PT - Portugues Brasileiro (indice 0)
-        "Bem-vindo, %s\nEu sou Alef e este eh o seu DIARIO FINANCEIRO PESSOAL em Canadian Dollar.\n \t \t Escolha a opcao desejada abaixo\n \t MENU PRINCIPAL", // (0) Boas-vindas
-        "[1] Cadastrar Receita",                              // (1) Menu - Receita
-        "[2] Cadastrar Despesa",                              // (2) Menu - Despesa
-        "[3] Consultar Saldo",                                // (3) Menu - Consultar saldo
-        "[4] Gerar Relatorio",                                // (4) Menu - Gerar relatorio
-        "[5] Alterar Idioma",                                 // (5) Menu - Alterar idioma
-        "[6] Remover Movimentacao",                           // (6) Menu - Remover movimentacao
-        "[7] Sair",                                           // (7) Menu - Sair
-        "\n+== DIARIO FINANCEIRO PESSOAL==+\n\n",             // (8) Cabecalho - Titulo
-        "Descricao da transacao: ",                           // (9) Entrada - Descricao
-        "Valor da transacao (ex: 120099 para 1200.99 CAD ) || ZERO OU -1 para cancelar: ", // (10) Entrada - Valor
-        "Data da Transacao (aaaa-mm-dd): ",                   // (11) Data da Transacao
-        "Receita registrada com sucesso!\n",                  // (12) Confirmacao - Receita registrada
-        "Despesa registrada com sucesso!\n",                  // (13) Confirmacao - Despesa registrada
-        "Gostaria de definir uma meta financeira mensal?\n",  // (14) Pergunta - Meta financeira
-        "Digite [ 1 ] para SIM || Digite [ 2 ] para Sair: ",  // (15) Opcao - Meta financeira
-        "Pressione ENTER para continuar...",                  // (16) Prompt - Continuar
-        "Informe a descricao do que deseja remover ou ZERO para sair:\n", // (17) Entrada - Remocao descricao
-        "Movimentacao removida com sucesso.\n",               // (18) Confirmacao - Remocao
-        "Nenhum registro com essa descricao encontrado.\n",   // (19) Erro - Nao encontrada
-        "Opcao invalida.\n",                                  // (20) Erro - Opcao invalida
-        "Digite [ 1 ] para Continuar || Digite [ 2 ] para Sair: ", // (21) Confirmacao - Continuidade
-        "Idioma alterado para: %s\n",                         // (22) Confirmacao - Idioma alterado
-        "Novo idioma (PT/FR/EN): ",                           // (23) Entrada - Novo idioma
-        "Operacao cancelada. Retornando ao menu...\n",        // (24) Aviso - Operacao cancelada
-        "\n+=+=+=+=+=+=+=+=+=+=+=+=+=\nAguarde...\n",         // (25) Aguarde
-        "Sua Escolha: ",                                      // (26) Prompt - Escolha do menu
-        "Escolha uma categoria:\n",                           // (27) Novo: Prompt para escolher categoria
-        "Opcao de categoria invalida. Tente novamente.\n",    // (28) Novo: Erro de categoria invalida
-        "Categoria: ",                                        // (29) NOVO: Label "Categoria" para exibicao
+        "Bem-vindo, %s\nEu sou Alef e este eh o seu DIARIO FINANCEIRO PESSOAL em Dolar Canadense (CAD).\nEscolha a opcao desejada do menu:\n",                                                   // (0) Boas-vindas
+        "[1] Cadastrar Receita",                                    // (1) Menu - Receita
+        "[2] Cadastrar Despesa",                                    // (2) Menu - Despesa
+        "[3] Consultar Saldo",                                      // (3) Menu - Consultar saldo
+        "[4] Gerar Relatorio",                                      // (4) Menu - Gerar relatorio
+        "[5] Alterar Idioma",                                       // (5) Menu - Alterar idioma
+        "[6] Remover Movimentacao",                                 // (6) Menu - Remover movimentacao
+        "[7] Sair",                                                 // (7) Menu - Sair
+        "\n=$$= MENU PRINCIPAL =$$=\n\n",                           // (8) Menu Principal
+        "Descricao da transacao: ",                                 // (9) Entrada - Descricao
+        "Valor da transacao (ex: 120099 para 1200.99 CAD) || ZERO ou -1 para cancelar: ", // (10) Entrada - Valor
+        "Data da Transacao (aaaa-mm-dd): ",                         // (11) Data da Transacao
+        "Receita registrada com sucesso!\n",                        // (12) Confirmacao - Receita registrada
+        "Despesa registrada com sucesso!\n",                        // (13) Confirmacao - Despesa registrada
+        "Gostaria de definir uma meta financeira mensal?\n",        // (14) Pergunta - Meta financeira
+        "Digite [ 1 ] para SIM || Digite [ 2 ] para NAO: ",         // (15) Opcao - Meta financeira
+        "Pressione ENTER para continuar...",                        // (16) Prompt - Continuar
+        "Informe a descricao da movimentacao que deseja remover ou ZERO para sair:\n", // (17) Entrada - Remocao descricao
+        "Movimentacao removida com sucesso.\n",                     // (18) Confirmacao - Remocao
+        "Nenhum registro com essa descricao encontrado.\n",         // (19) Erro - Nao encontrada
+        "Opcao invalida.\n",                                        // (20) Erro - Opcao invalida
+        "Digite [ 1 ] para Continuar || Digite [ 2 ] para Sair: ",  // (21) Confirmacao - Continuidade
+        "Idioma alterado para: %s\n",                               // (22) Confirmacao - Idioma alterado
+        "Novo idioma (PT/FR/EN): ",                                 // (23) Entrada - Novo idioma
+        "Operacao cancelada. Retornando ao menu...\n",              // (24) Aviso - Operacao cancelada
+        "\n+$+$+$+$+$+$+$+$+$+$+$\nAguarde...\n",                   // (25) Aguarde
+        "Sua Escolha: ",                                            // (26) Prompt - Escolha do menu
+        "Escolha uma categoria:\n",                                 // (27) Novo: Prompt para escolher categoria
+        "Opcao de categoria invalida. Tente novamente.\n",          // (28) Novo: Erro de categoria invalida
+        "Categoria: ",                                              // (29) NOVO: Label "Categoria" para exibicao
         "Escolha o tipo de relatorio:\n[1] Geral\n[2] Diario\n[3] Mensal\n[4] Grafico de Fluxo de Caixa\n[5] Voltar ao menu principal\nSua escolha: ", // (30) Tipo de relatorio e sub-menu de relatorios
-        "Digite a data no padrao ISO 8601 (aaaa-mm-dd): ",           // (31) Digite a data
-        "Digite o ano e mes no padrao ISO 8601 (aaaa-mm): ",        // (32) Digite o ano e mês
-        "Nao ha transacoes para este periodo.\n",             // (33) Nao ha transacoes
-        "Relatorio Diario para %04d-%02d-%02d\n",       // (34) Titulo Relatorio Diario (ANO-MES-DIA) ISO 8601
-        "Relatorio Mensal para %04d-%02d\n",            // (35) Titulo Relatorio Mensal (ANO-MES)
-        "Erro na leitura da data. Formato esperado (aaaa-mm-dd).\n", //(36) Erro de leitura
-        "Erro de alocacao de memoria ao ler movimentacao!\n",     //(37)Erro de memoria
-        "Valor invalido! Por favor, insira um numero inteiro valido ou ZERO/NEGATIVO para cancelar.\n", // (38) Erro - Valor inválido
-        "Data invalida! Por favor, insira uma data valida (aaaa-mm-dd).\n", // (39) Erro - Data inválida
-        "Receitas: ",                                         // (40) Receitas Grafico
-        "\nDespesas: ",                                       // (41) Despesas Grafico
-        "\nSaldo: ",                                          // (42) Saldo
-        "Gostariamos de coletar dados anonimos de uso para melhorar o aplicativo. Voce concorda com o compartilhamento de dados?\n", // (43) Pergunta de Consentimento (PT)
-        "--- RELATORIO FINANCEIRO GERAL ---\n",               // (44) Título Relatório Geral
-        "Nenhuma movimentacao registrada ainda.\n",           // (45) Nenhuma movimentação (Relatório Geral)
-        "\n--- GRAFICO DE FLUXO DE CAIXA ---\n",              // (46) Título Gráfico de Fluxo de Caixa
-        "\n+_+_+_+_+_+_+_+_+ == META FINANCEIRA == +_+_+_+_+_+_+_+_+_+_+_\n", // (47) Título da Meta Financeira
-        "Digite o nome da sua meta financeira: ",             // (48) Pergunta pelo nome da meta
+        "Digite a data no padrao ISO 8601 (aaaa-mm-dd): ",          // (31) Digite a data
+        "Digite o ano e mes no padrao ISO 8601 (aaaa-mm): ",        // (32) Digite o ano e mes
+        "Nao ha transacoes para este periodo.\n",                   // (33) Nao ha transacoes
+        "Relatorio Diario para %04d-%02d-%02d\n",                   // (34) Titulo Relatorio Diario (ANO-MES-DIA) ISO 8601
+        "Relatorio Mensal para %04d-%02d\n",                        // (35) Titulo Relatorio Mensal (ANO-MES)
+        "Erro na leitura da data. Formato esperado (aaaa-mm-dd).\n",// (36) Erro de leitura
+        "Erro de alocacao de memoria ao ler movimentacao!\n",       // (37) Erro de memoria
+        "Valor invalido! Por favor, insira um numero inteiro valido ou ZERO/NEGATIVO para cancelar.\n", // (38) Erro - Valor invalido
+        "Data invalida! Por favor, insira uma data valida (aaaa-mm-dd).\n", // (39) Erro - Data invalida
+        "Receitas: ",                                               // (40) Receitas Grafico
+        "\nDespesas: ",                                             // (41) Despesas Grafico
+        "\nSaldo: ",                                                // (42) Saldo
+        "Gostariamos de coletar dados de uso para melhorar o aplicativo. Voce concorda com o compartilhamento de dados?\n", // (43) Pergunta de Consentimento (PT)
+        "$+$+$+$+$+$+$+$+$+$+$+$ RELATORIO FINANCEIRO GERAL $+$+$+$+$+$+$+$+$+$+$+$\n", // (44) Titulo Relatorio Geral
+        "Nenhuma movimentacao registrada ainda.\n",                 // (45) Nenhuma movimentacao (Relatorio Geral)
+        "\n$+$+$+$+$+$+$+$+$+$+$+$ GRAFICO DE FLUXO DE CAIXA $+$+$+$+$+$+$+$+$+$+$+$\n", // (46) Titulo Grafico de Fluxo de Caixa
+        "\n$+$+$+$+$+$+$+$+$+ == META FINANCEIRA == $+$+$+$+$+$+$+$+$+$+$+$\n", // (47) Titulo da Meta Financeira
+        "Digite o nome da sua meta financeira: ",                   // (48) Pergunta pelo nome da meta
         "E qual seria o valor da meta (ex: 120099 para 1200.99 CAD): ", // (49) Pergunta pelo valor da meta
-        "\nMeta: %s\n",                                       // (50) Exibe o nome da meta
-        "Valor da Meta: ",                                    // (51) Exibe o valor da meta
-        " CAD\n",                                             // (52) Moeda CAD
-        "Parabens! Voce ja atingiu sua meta financeira!\n",   // (53) Mensagem de parabéns
-        "Saldo atual: ",                                      // (54) Exibe o saldo atual
-        "Faltam: ",                                           // (55) Exibe o valor restante para a meta
-        "\n\n\tProgresso:\n\t[",                              // (56) Título da barra de progresso
-        "] %.0f%%\n",                                         // (57) Final da barra de progresso e porcentagem
+        "\nMeta: %s\n",                                             // (50) Exibe o nome da meta
+        "Valor da Meta: ",                                          // (51) Exibe o valor da meta
+        " CAD\n",                                                   // (52) Moeda CAD
+        "Parabens! Voce ja atingiu sua meta financeira!\n",         // (53) Mensagem de parabens
+        "Saldo atual: ",                                            // (54) Exibe o saldo atual
+        "Faltam: ",                                                 // (55) Exibe o valor restante para a meta
+        "\n\n\tProgresso:\n\t[",                                    // (56) Titulo da barra de progresso
+        "] %.0f%%\n",                                               // (57) Final da barra de progresso e porcentagem
         "Obrigado! Seus dados nos ajudarao a melhorar o aplicativo.\n", // (58) Agradecimento de consentimento PT
-        "Por favor, digite seu nome: " // (59) Por favor, digite seu nome:
+        "Por favor, digite seu nome: "                              // (59) Por favor, digite seu nome:
     },
     { // FR - Quebecois (pas d'accent) (indice 1)
-        "Salut, %s\nJe suis Alef et voici votre JOURNAL FINANCIER PERSONNEL en dollar canadien.\n \t \t Veuillez choisir une option ci-dessous\n \t MENU PRINCIPAL", // (0) Bienvenue
-        "[1] Enregistrer un revenu",                            // (1) Menu - Revenu
-        "[2] Enregistrer une depense",                          // (2) Menu - Depense
-        "[3] Consulter le solde",                               // (3) Menu - Solde
-        "[4] Generer un rapport",                               // (4) Menu - Rapport
-        "[5] Changer la langue",                                // (5) Menu - Langue
-        "[6] Supprimer une transaction",                        // (6) Menu - Supprimer
-        "[7] Quitter",                                          // (7) Menu - Quitter
-        "\n+== JOURNAL FINANCIER PERSONNEL ==+\n\n",             // (8) Titre - Journal
-        "Description de la transaction : ",                     // (9) Entree - Description
+        "Salut, %s\nJe suis Alef et voici votre JOURNAL FINANCIER PERSONNEL en dollar canadien (CAD).\n \t \t Veuillez choisir une option ci-dessous\n \t MENU PRINCIPAL",                     // (0) Bienvenue
+        "[1] Enregistrer un revenu",                                // (1) Menu - Revenu
+        "[2] Enregistrer une depense",                              // (2) Menu - Depense
+        "[3] Consulter le solde",                                   // (3) Menu - Solde
+        "[4] Generer un rapport",                                   // (4) Menu - Rapport
+        "[5] Changer la langue",                                    // (5) Menu - Langue
+        "[6] Supprimer une transaction",                            // (6) Menu - Supprimer
+        "[7] Quitter",                                              // (7) Menu - Quitter
+        "\n=$$= MENU PRINCIPAL =$$=\n\n",                           // (8) Menu Principal
+        "Description de la transaction : ",                         // (9) Entree - Description
         "Montant de la transaction (ex : 120099 pour 1200.99 CAD) || ZERO ou -1 pour annuler : ", // (10) Entree - Montant
-        "Date de la transaction (aaaa-mm-jj): ",               // (11) Date
-        "Revenu enregistre avec succes !\n",                    // (12) Confirmation - Revenu
-        "Depense enregistree avec succes !\n",                  // (13) Confirmation - Depense
+        "Date de la transaction (aaaa-mm-jj): ",                   // (11) Date
+        "Revenu enregistre avec succes !\n",                        // (12) Confirmation - Revenu
+        "Depense enregistree avec succes !\n",                      // (13) Confirmation - Depense
         "Souhaitez-vous vous fixer un objectif financier mensuel ?\n", // (14) Question a propos de l'Objectif
-        "Appuyez sur [ 1 ] pour OUI || Appuyez sur [ 2 ] pour Quitter : ", // (15) Opcao - Objectif
-        "Appuyez sur ENTREE pour continuer...",                 // (16) Invite - Continuer
-        "Entrez la description a supprimer ou 0 pour quitter :\n", // (17) Entree - Suppression
-        "Transaction supprimee avec succes.\n",                 // (18) Confirmation - Suppression
-        "Transaction non trouvee.\n",                           // (19) Erreur - Non trouvee
-        "Option invalide.\n",                                  // (20) Erreur - Invalide
+        "Appuyez sur [ 1 ] pour OUI || Appuyez sur [ 2 ] pour NON : ", // (15) Opcao - Objectif
+        "Appuyez sur ENTREE pour continuer...",                     // (16) Invite - Continuer
+        "Entrez la description de la transaction a supprimer ou 0 pour quitter :\n", // (17) Entree - Suppression
+        "Transaction supprimee avec succes.\n",                     // (18) Confirmation - Suppression
+        "Transaction non trouvee.\n",                               // (19) Erreur - Non trouvee
+        "Option invalide.\n",                                       // (20) Erreur - Invalide
         "Appuyez sur [ 1 ] pour Continuer || Appuyez sur [ 2 ] pour Quitter : ", // (21) Confirmation - Continuer
-        "Langue changee pour : %s\n",                           // (22) Confirmation - Langue
-        "Nouvelle langue (PT/FR/EN) : ",                        // (23) Entree - Langue
-        "Operation annulee. Retour au menu...\n",               // (24) Avis - Annulation
-        "\n+=+=+=+=+=+=+=+=+=+=+=+=+=\nVeuillez patienter...\n",  // (25) Attente
-        " Votre choix : ",                                      // (26) Invite - Choix menu
-        "Choisissez une categorie:\n",                          // (27) Prompt para escolher categoria
-        "Option de categorie invalide. Veuillez reessayer.\n",    // (28) Erro de categoria invalida
-        "Categorie : ",                                         // (29) "Categorie" para exibicao
+        "Langue changee pour : %s\n",                               // (22) Confirmation - Langue
+        "Nouvelle langue (PT/FR/EN) : ",                            // (23) Entree - Langue
+        "Operation annulee. Retour au menu...\n",                   // (24) Avis - Annulation
+        "\n$+$+$+$+$+$+$+$+$+$+$+$\nVeuillez patienter...\n",       // (25) Attente
+        " Votre choix : ",                                          // (26) Invite - Choix menu
+        "Choisissez une categorie:\n",                              // (27) Prompt para escolher categoria
+        "Option de categorie invalide. Veuillez reessayer.\n",      // (28) Erro de categoria invalida
+        "Categorie : ",                                             // (29) "Categorie" para exibicao
         "Choisissez le type de rapport:\n[1] General\n[2] Quotidien\n[3] Mensuel\n[4] Graphique de Flux de Tresorerie\n[5] Retour au menu principal\nVotre choix: ", // (30) Tipo de relatorio
-        "Entrez la date au format ISO 8601 (aaaa-mm-jj): ",  // (31) Entrez le jour
+        "Entrez la date au format ISO 8601 (aaaa-mm-jj): ",         // (31) Entrez le jour
         "Entrez l'annee et le mois au format ISO 8601 (aaaa-mm): ", // (32) Entrez l'annee et le mois
-        "Aucune transaction pour cette periode.\n",             // (33) Aucune transaction
-        "Rapport quotidien pour %04d-%02d-%02d\n",              // (34) Titulo Relatorio Diario (ANNEE-MOIS-JOUR)
-        "Rapport mensuel pour %04d-%02d\n",                     // (35) Titulo Relatorio Mensal (ANNEE-MOIS)
+        "Aucune transaction pour cette periode.\n",                 // (33) Aucune transaction
+        "Rapport quotidien pour %04d-%02d-%02d\n",                  // (34) Titulo Relatorio Diario (ANNEE-MOIS-JOUR)
+        "Rapport mensuel pour %04d-%02d\n",                         // (35) Titulo Relatorio Mensal (ANNEE-MOIS)
         "Erreur lors de la lecture de la date. Format attendu aaaa-mm-jj (ISO 8601).\n", //Erreur de la lecture de la date
         "Erreur d'allocation de memoire lors de la lecture du mouvement !\n", // Erreur de memoire
         "Montant invalide ! Veuillez saisir un nombre entier valide ou ZERO/NEGATIF pour annuler.\n", // (38) Erro - Montant invalide
         "Date invalide ! Veuillez saisir une date valide (aaaa-mm-jj).\n", // (39) Erro - Date invalide
-        "Revenus: ",                                          // (40) Revenus Graphique
-        "\nDepenses: ",                                       // (41) Depenses Graphique
-        "\nSolde: ",                                          // (42) Saldo
-        "Nous aimerions collecter des donnees d'utilisation anonymes pour ameliorer l'application. \nAcceptez-vous le partage de donnees ?\n",            // (43) Pergunta de Consentimento (FR)
-        "--- RAPPORT FINANCIER GENERAL ---\n",                  // (44) Título Relatório Geral
-        "Aucune transaction enregistree pour le moment.\n",      // (45) Nenhuma movimentação (Relatório Geral)
-        "\n--- GRAPHIQUE DES FLUX DE TRESORERIE ---\n",          // (46) Título Gráfico de Fluxo de Caixa
-        "\n+_+_+_+_+_+_+_+_+ == OBJECTIF FINANCIER == +_+_+_+_+_+_+_+_+_+_+_\n", // (47) Título da Meta Financeira
-        "Veuillez entrer le nom de votre objectif financier : ",  // (48) Pergunta pelo nome da meta
+        "Revenus: ",                                                // (40) Revenus Graphique
+        "\nDepenses: ",                                             // (41) Depenses Graphique
+        "\nSolde: ",                                                // (42) Saldo
+        "Nous aimerions collecter des donnees d'utilisation pour ameliorer l'application. \nAcceptez-vous le partage de donnees ?\n", // (43) Pergunta de Consentimento (FR)
+        "$+$+$+$+$+$+$+$+$+$+$+$ RAPPORT FINANCIER GENERAL $+$+$+$+$+$+$+$+$+$+$+$\n", // (44) Titulo Relatorio Geral
+        "Aucune transaction enregistree pour le moment.\n",         // (45) Nenhuma movimentacao (Relatorio Geral)
+        "\n$+$+$+$+$+$+$+$+$+$+$+$ GRAPHIQUE DES FLUX DE TRESORERIE $+$+$+$+$+$+$+$+$+$+$+$\n", // (46) Titulo Grafico de Fluxo de Caixa
+        "\n$+$+$+$+$+$+$+$+$+$+$+$ == OBJECTIF FINANCIER == $+$+$+$+$+$+$+$+$+$+$+$\n", // (47) Titulo da Meta Financeira
+        "Veuillez entrer le nom de votre objectif financier : ",    // (48) Pergunta pelo nome da meta
         "Quel serait le montant de votre objectif (ex : 120099 pour 1200.99 $ CAD) : ", // (49) Pergunta pelo valor da meta
-        "\nObjectif : %s\n",                                    // (50) Exibe o nome da meta
-        "Montant de l'objectif : ",                             // (51) Exibe o valor da meta
-        " CAD\n",                                               // (52) Moeda CAD
-        "Felicitations ! Vous avez atteint votre objectif financier !\n", // (53) Mensagem de parabéns
-        "Solde actuel : ",                                      // (54) Exibe o saldo atual
-        "Il manque : ",                                         // (55) Exibe o valor restante para a meta
-        "\n\n\tProgression :\n\t[",                              // (56) Título da barra de progresso
-        "] %.0f%%\n",                                           // (57) Final da barra de progresso e porcentagem
+        "\nObjectif : %s\n",                                        // (50) Exibe o nome da meta
+        "Montant de l'objectif : ",                                 // (51) Exibe o valor da meta
+        " CAD\n",                                                   // (52) Moeda CAD
+        "Felicitations ! Vous avez atteint votre objectif financier !\n", // (53) Mensagem de parabens
+        "Solde actuel : ",                                          // (54) Exibe o saldo atual
+        "Il manque : ",                                             // (55) Exibe o valor restante para a meta
+        "\n\n\tProgression :\n\t[",                                 // (56) Titulo da barra de progresso
+        "] %.0f%%\n",                                               // (57) Final da barra de progresso e porcentagem
         "Merci beaucoup! Vos donnees nous aiderons a ameliorar l'application.\n", // (58) Agradecimento de consentimento FR
-         "Veuillez entrer votre nom: " // (59)Veuillez entrer votre nom: "
+        "Veuillez entrer votre nom: "                               // (59) Veuillez entrer votre nom: "
     },
     { // EN - Canadian English (indice 2)
-        "Hello, %s\nI am Alef and this is your PERSONAL FINANCIAL JOURNAL in Canadian Dollars.\n \t \t Please choose an option below\n \t MAIN MENU", // (0) Welcome
-        "[1] Register Income",                                  // (1) Menu - Income
-        "[2] Register Expense",                                 // (2) Menu - Expense
-        "[3] Check Balance",                                    // (3) Menu - Check balance
-        "[4] Generate Report",                                  // (4) Menu - Generate report
-        "[5] Change Language",                                  // (5) Menu - Change language
-        "[6] Remove Transaction",                               // (6) Menu - Remove transaction
-        "[7] Exit",                                             // (7) Menu - Exit
-        "\n+== PERSONAL FINANCIAL JOURNAL ==+\n\n",              // (8) Header - Title
-        "Transaction description: ",                            // (9) Input - Description
+        "Hello, %s\nI am Alef and this is your PERSONAL FINANCIAL JOURNAL in Canadian Dollars (CAD).\n \t \t Please choose an option below\n \t MAIN MENU",                                      // (0) Welcome
+        "[1] Register Income",                                      // (1) Menu - Income
+        "[2] Register Expense",                                     // (2) Menu - Expense
+        "[3] Check Balance",                                        // (3) Menu - Check balance
+        "[4] Generate Report",                                      // (4) Menu - Generate report
+        "[5] Change Language",                                      // (5) Menu - Change language
+        "[6] Remove Transaction",                                   // (6) Menu - Remove transaction
+        "[7] Exit",                                                 // (7) Menu - Exit
+        "\n=$$= MAIN MENU =$$=\n\n",                                // (8) Menu Principal 
+        "Transaction description: ",                                // (9) Input - Description
         "Transaction amount (e.g., 120099 for 1200.99 CAD) || ZERO or -1 to cancel: ", // (10) Input - Amount
-        "Transaction date (yyyy-mm-dd):",                      // (11) Date
-        "Income successfully recorded!\n",                      // (12) Confirmation - Income
-        "Expense successfully recorded!\n",                     // (13) Confirmation - Expense
-        "Would you like to set a monthly financial goal?\n",    // (14) Question - Goal
-        "Press [ 1 ] for YES || Press [ 2 ] to Exit: ",         // (15) Option - Goal
-        "Press ENTER to continue...",                           // (16) Prompt - Continue
-        "Please enter the description to remove, or type 0 to exit:\n", // (17) Input - Remove description
-        "Transaction successfully removed.\n",                  // (18) Confirmation - Removed
-        "Transaction not found.\n",                             // (19) Error - Not found
-        "Invalid option.\n",                                   // (20) Error - Invalid option
-        "Press [ 1 ] to Continue || Press [ 2 ] to Exit: ",     // (21) Confirmation - Continue
-        "Language changed to: %s\n",                            // (22) Confirmation - Language changed
-        "New language (PT/FR/EN): ",                           // (23) Input - New language
-        "Operation canceled. Returning to menu...\n",           // (24) Notice - Operation canceled
-        "\n+=+=+=+=+=+=+=+=+=+=+=+=+=\nPlease wait...\n",       // (25) Wait
-        "Your Choice: ",                                        // (26) Prompt - Menu choice
-        "Choose a category:\n",                                 // (27) Prompt para escolher categoria
-        "Invalid category option. Please try again.\n",         // (28) Erro de categoria invalida
-        "Category: ",                                           // (29) Label "Category" para exibicao
+        "Transaction date (yyyy-mm-dd):",                           // (11) Date
+        "Income successfully recorded!\n",                          // (12) Confirmation - Income
+        "Expense successfully recorded!\n",                         // (13) Confirmation - Expense
+        "Would you like to set a monthly financial goal?\n",        // (14) Question - Goal
+        "Press [ 1 ] for YES || Press [ 2 ] for NO: ",              // (15) Option - Goal
+        "Press ENTER to continue...",                               // (16) Prompt - Continue
+        "Please enter the description of the transaction to remove, or type 0 to exit:\n", // (17) Input - Remove description
+        "Transaction successfully removed.\n",                      // (18) Confirmation - Removed
+        "Transaction not found.\n",                                 // (19) Error - Not found
+        "Invalid option.\n",                                        // (20) Error - Invalid option
+        "Press [ 1 ] to Continue || Press [ 2 ] to Exit: ",         // (21) Confirmation - Continue
+        "Language changed to: %s\n",                                // (22) Confirmation - Language changed
+        "New language (PT/FR/EN): ",                                // (23) Input - New language
+        "Operation canceled. Returning to menu...\n",               // (24) Notice - Operation canceled
+        "\n$+$+$+$+$+$+$+$+$+$+$+$\nPlease wait...\n",             // (25) Wait
+        "Your Choice: ",                                            // (26) Prompt - Menu choice
+        "Choose a category:\n",                                     // (27) Prompt para escolher categoria
+        "Invalid category option. Please try again.\n",             // (28) Erro de categoria invalida
+        "Category: ",                                               // (29) Label "Category" para exibicao
         "Choose report type:\n[1] General\n[2] Daily\n[3] Monthly\n[4] Cash Flow Chart\n[5] Back to main menu\nYour choice: ", // (30) Tipo de relatorio
-        "Enter date in ISO 8601 format (yyyy-mm-dd): ",         // (31) Enter day
-        "Enter year and month in ISO 8601 format (yyyy-mm): ",  // (32) Enter year and month
-        "No transactions for this period.\n",                   // (33) No transactions
-        "Daily Report for %04d-%02d-%02d\n",                   // (34) Titulo Relatorio Diario (YEAR-MONTH-DAY)
-        "Monthly Report for %04d-%02d\n",                          // (35) Titulo Relatorio Mensal (YEAR-MONTH)
-        "Error reading date. Expected format: yyyy-mm-dd. (ISO 8601)\n",     //(36) Error reading date
-        "Memory allocation error when reading movement!\n",       // (37) Memory
+        "Enter date in ISO 8601 format (yyyy-mm-dd): ",             // (31) Enter day
+        "Enter year and month in ISO 8601 format (yyyy-mm): ",      // (32) Enter year and month
+        "No transactions for this period.\n",                       // (33) No transactions
+        "Daily Report for %04d-%02d-%02d\n",                        // (34) Titulo Relatorio Diario (YEAR-MONTH-DAY)
+        "Monthly Report for %04d-%02d\n",                           // (35) Titulo Relatorio Mensal (YEAR-MONTH)
+        "Error reading date. Expected format: YYYY-MM-DD. (ISO 8601)\n", //(36) Error reading date
+        "Memory allocation error when reading movement!\n",          // (37) Memory
         "Invalid amount! Please enter a valid integer or ZERO/NEGATIVE to cancel.\n", // (38) Error - Invalid amount
         "Invalid date! Please enter a valid date (yyyy-mm-dd).\n", // (39) Error - Invalid date
-        "Income: ",                                             // (40) Income Chart
-        "\nExpenses: ",                                         // (41) Expenses Chart
-        "\nCurrent balance:",                                   // (42) Saldo
-        "We would like to collect anonymous usage data to improve the application. \nDo you agree to data sharing?\n", // (43) Pergunta de Consentimento (EN)
-        "--- GENERAL FINANCIAL REPORT ---\n",                   // (44) Título Relatório Geral
-        "No transactions recorded yet.\n",                      // (45) Nenhuma movimentação (Relatório Geral)
-        "\n--- CASH FLOW CHART ---\n",                          // (46) Título Gráfico de Fluxo de Caixa
-        "\n+_+_+_+_+_+_+_+_+ == FINANCIAL GOAL == +_+_+_+_+_+_+_+_+_+_+_\n", // (47) Título da Meta Financeira
-        "Please enter the name of your financial goal: ",       // (48) Pergunta pelo nome da meta
+        "Income: ",                                                 // (40) Income Chart
+        "\nExpenses: ",                                             // (41) Expenses Chart
+        "\nCurrent balance:",                                       // (42) Saldo
+        "We would like to collect usage data to improve the application. \nDo you agree to data sharing?\n", // (43) Pergunta de Consentimento (EN)
+        "$+$+$+$+$+$+$+$+$+$+$+$ GENERAL FINANCIAL REPORT $+$+$+$+$+$+$+$+$+$+$+$\n", // (44) Titulo Relatorio Geral
+        "No transactions recorded yet.\n",                           // (45) Nenhuma movimentacao (Relatorio Geral)
+        "\n$+$+$+$+$+$+$+$+$+$+$+$ CASH FLOW CHART $+$+$+$+$+$+$+$+$+$+$+$\n", // (46) Titulo Grafico de Fluxo de Caixa
+        "\n$+$+$+$+$+$+$+$+$+$+$+$ == FINANCIAL GOAL == $+$+$+$+$+$+$+$+$+$+$+$\n", // (47) Titulo da Meta Financeira 
+        "Please enter the name of your financial goal: ",           // (48) Pergunta pelo nome da meta
         "What would be the target amount (e.g., 120099 for $1200.99 CAD): ", // (49) Pergunta pelo valor da meta
-        "\nGoal: %s\n",                                         // (50) Exibe o nome da meta
-        "Goal Amount: ",                                        // (51) Exibe o valor da meta
-        " CAD\n",                                               // (52) Moeda CAD
-        "Congratulations! You have already reached your financial goal!\n",// (53) Mensagem de parabéns
-        "Current balance: ",                                    // (54) Exibe o saldo atual
-        "Remaining: ",                                          // (55) Exibe o valor restante para a meta
-        "\n\n\tProgresso:\n\t[",                                 // (56) Título da barra de progresso
-        "] %.0f%%\n",                                           // (57) Final da barra de progresso e porcentagem
+        "\nGoal: %s\n",                                             // (50) Exibe o nome da meta
+        "Goal Amount: ",                                            // (51) Exibe o valor da meta
+        " CAD\n",                                                   // (52) Moeda CAD
+        "Congratulations! You have already reached your financial goal!\n",// (53) Mensagem de parabens
+        "Current balance: ",                                        // (54) Exibe o saldo atual
+        "Remaining: ",                                              // (55) Exibe o valor restante para a meta
+        "\n\n\tProgresso:\n\t[",                                    // (56) Titulo da barra de progresso
+        "] %.0f%%\n",                                               // (57) Final da barra de progresso e porcentagem
         "Thank you! Your data will help us improve the application.\n", // (58) Agradecimento de consentimento EN
-        "Please enter your name: "                              // (60) Please enter your name: 
+        "Please enter your name: "                                  // (59) Please enter your name:
     }
 };
 
@@ -325,7 +324,7 @@ void bufferLimpo();
 void beep();
 void carregarMovimentacoes(const char *nomeArquivo);
 void consultarSaldo();
-int dataValida(int dia, int mes, int ano); // Reintroduzida
+int dataValida(int dia, int mes, int ano); //
 void despedida();
 void digitar(const char *mensagem, unsigned int atraso_ms);
 void expandirLista();
@@ -412,7 +411,7 @@ Funções Intermediárias (Funções que realizam algum tipo de trabalho para as
 •	carregarMovimentacoes(const char *nomeArquivo): Carrega todas as movimentações financeiras previamente salvas e os dados da meta financeira de um arquivo binário especificado. Implementa tratamento de erro para falhas na leitura.
 •	consultarSaldo(): Calcula o saldo total, o total de receitas e o total de despesas a partir das movimentações registradas e os exibe no console.
 •	despedida(): Exibe mensagens de despedida em todos os idiomas suportados e introduz um pequeno atraso antes que o programa seja encerrado, proporcionando uma transição suave.
-•	exibirMenuConsentimentoDados(): Apresenta uma tela de consentimento ao usuário, perguntando se ele concorda em compartilhar dados de uso anônimos. Esta funcionalidade é ativada apenas quando o idioma é Francês ou Inglês. Retorna a escolha do usuário.
+•	exibirMenuConsentimentoDados(): Apresenta uma tela de consentimento ao usuário, perguntando se ele concorda em compartilhar dados de uso. Esta funcionalidade é ativada para qualquer idioma conforme as leis locais de proteção de dados. Retorna a escolha do usuário.
 •	exibirMetaFinanceira(): Exibe os detalhes da meta financeira cadastrada, incluindo seu nome, valor e o progresso atual em relação ao saldo, acompanhado de uma barra de progresso visual.
 •	expandirLista(): Função utilitária que dobra a capacidade alocada para o vetor dinâmico lista de movimentações. É chamada quando o número de movimentações atinge a capacidade atual.
 •	imprimirGraficoFluxoCaixa(): Gera um gráfico de fluxo de caixa simplificado utilizando caracteres ASCII no console, mostrando visualmente as proporções de receitas, despesas e saldo total.
@@ -462,7 +461,7 @@ void carregarMovimentacoes(const char *nomeArquivo) {
         metaFinanceiraValorCentavos = 0;
         metaFinanceiraCadastrada = 0;
     }
-    
+
     // Tenta ler 'total' de movimentações
     if (fread(&total, sizeof(total), 1, arquivo) != 1) {
         total = 0; // Se falhar a leitura do total, assume 0
@@ -473,7 +472,7 @@ void carregarMovimentacoes(const char *nomeArquivo) {
         capacidade = total; // Ajusta a capacidade para o total carregado
         lista = (Movimentacao*) malloc(capacidade * sizeof(Movimentacao)); 
         if (!lista) {
-            printf("%s", textos[idiomaAtual][37]); // (37) Erro de alocacao de memoria ao ler movimentacao!
+            printf("%s", dicionario[idiomaAtual][37]); // (37) Erro de alocacao de memoria ao ler movimentacao!
             exit(1);
         }
         if (fread(lista, sizeof(Movimentacao), (size_t)total, arquivo) != (size_t)total) {
@@ -499,7 +498,7 @@ void consultarSaldo() {
         else if (lista[willow].tipo == 'D') d += lista[willow].valorCentavos;
     }
     int saldo = r - d;    
-    printf("\n--- $$$$$$ ---\n");
+    printf("\n ______________ $$$$$$ ______________ \n");
     PRINT_MSG(40); printf("..............."); imprimirValor(r); printf("\n"); // (40) "Receitas: "
     PRINT_MSG(41); printf("..............."); imprimirValor(d); printf("\n"); // (41) "Despesas: "
     PRINT_MSG(42); printf(".................."); imprimirValor(saldo); printf("\n\n"); // (42) "Saldo: "
@@ -542,8 +541,7 @@ void digitar(const char *mensagem, unsigned int atraso_ms) {
 
 int exibirMenuConsentimentoDados() {
     int escolhaConsentimento;
-    // LINHA REMOVIDA: if (idiomaAtual == FR || idiomaAtual == EN) {
-    
+   
     TYPE_MSG(43); // (43) Pergunta de Consentimento 
     PRINT_MSG(15); // (15) "Digite [ 1 ] para SIM || Digite [ 2 ] para Sair: "
 
@@ -574,7 +572,7 @@ int exibirMenuConsentimentoDados() {
 void exibirMenuPrincipal() {
     limparTela();
     printf(T(0), nomeUsuario); // Reutiliza a mensagem de boas-vindas com o nome do usuário
-    PRINT_MSG(8); // (8) Cabeçalho - Título
+    PRINT_MSG(8); // (8) Menu Principal
     for (int willow = 1; willow <= 7; willow++) { // Alterado 'i' para 'willow'
         printf("%s\n", T(willow)); // Textos de 1 a 7 do menu
     }
@@ -691,7 +689,6 @@ void gerenciarIdioma() {
         return;
     }
     printf(T(22), idioma); // Confirmation - Language
-
     if (idiomaAtual == PT || idiomaAtual == FR || idiomaAtual == EN) { 
         int resultadoConsentimento = exibirMenuConsentimentoDados();
         if (resultadoConsentimento == 0) {
@@ -709,7 +706,7 @@ void gerenciarMenuRelatorios() {
     int dia = 0, mes = 0, ano = 0; 
     do {
         limparTela();
-        printf("%s", textos[idiomaAtual][30]); // (30) Tipo de relatorio e sub-menu
+        printf("%s", dicionario[idiomaAtual][30]); // (30) Tipo de relatorio e sub-menu
         scanf("%i", &subOpcao); 
         bufferLimpo();
         switch (subOpcao) {
@@ -720,7 +717,7 @@ void gerenciarMenuRelatorios() {
             case 2: // Diario 
                 limparTela();
                 if (!lerDataComValidacao(&dia, &mes, &ano, 1)) { 
-                    digitar(textos[idiomaAtual][24], 25); // (24) Operação cancelada.
+                    digitar(dicionario[idiomaAtual][24], 25); // (24) Operação cancelada.
                     break;
                 }
                 imprimirMovimentacoes(1, dia, mes, ano); 
@@ -728,7 +725,7 @@ void gerenciarMenuRelatorios() {
             case 3: // Mensal 
                 limparTela();
                 if (!lerDataComValidacao(&dia, &mes, &ano, 2)) { 
-                    digitar(textos[idiomaAtual][24], 25); // (24) Operação cancelada.
+                    digitar(dicionario[idiomaAtual][24], 25); // (24) Operação cancelada.
                     break;
                 }
                 imprimirMovimentacoes(2, 0, mes, ano); 
@@ -738,15 +735,13 @@ void gerenciarMenuRelatorios() {
                 imprimirGraficoFluxoCaixa();
                 break;
             case 5: 
-                digitar(textos[idiomaAtual][24], 25); // (24) Operação cancelada.
+                digitar(dicionario[idiomaAtual][24], 25); // (24) Operação cancelada.
                 break;
             default:
                 tratarOpcaoInvalida();
                 break;
         }
-        if (subOpcao != 5) { 
-            pausarExecucao();
-        }
+        if (subOpcao != 5) pausarExecucao();
     } while (subOpcao != 5);
 }
 
@@ -1118,5 +1113,5 @@ void solicitarNovoNomeUsuario() {
     TYPE_MSG(59); // (59)"Por favor, digite seu nome: "
     lerStringSimples(nomeUsuario, sizeof(nomeUsuario));
 }
-void tratarOpcaoInvalida() { PRINT_MSG(20); beep();}
-//ultima atualização: 12/junho/2025
+void tratarOpcaoInvalida() {PRINT_MSG(20); beep();}
+//ultima atualização: 15/junho/2025 ------- "TETELESTAI"
