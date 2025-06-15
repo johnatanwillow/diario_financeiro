@@ -11,12 +11,12 @@
  *  poderia ter. 
  * Isso permite validar a ideia e a usabilidade antes de investir em um desenvolvimento mais extenso
  * * DESENVOLVEDORES:
+ * 
  * JOHNATAN WILLOW DIAS DE ANDRADE
  * MATHEUS GOMES RODRIGUES
  * NICOLE DOS SANTOS CASSIANO
  *
- * DATA DE CRIAÇÃO: 27 de março de 2025
- * ÚLTIMA ATUALIZAÇÃO: 12 de junho de 2025
+ * DATA DE CRIAÇÃO: 27 de março de 2025 ➜ ÚLTIMA ATUALIZAÇÃO: 15 de junho de 2025
  * REPOSITÓRIO DO CÓDIGO: https://github.com/johnatanwillow/diario_financeiro *
  * +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
  * - ESTRUTURA E FUNCIONALIDADES PRINCIPAIS (FLUXO)
@@ -41,7 +41,6 @@
  * - [7] ➜ Salva todos os dados em arquivo binário e encerra o programa após um breve delay (1 segundo).
  * +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
  * - DESTAQUES DE DESIGN E CONFORMIDADE
- *
  * ● PERSISTÊNCIA DE DADOS: Todas as transações e metas são salvas em arquivo binário (alef.bin)
  * e carregadas automaticamente, garantindo a integridade dos dados. (✓)
  * ● REQUISITOS TÉCNICOS: Implementado em C, com uso obrigatório de structs, vetores,
@@ -393,7 +392,7 @@ int main() {/*******************************************[ INICIO DO MAIN ]******
                 tratarOpcaoInvalida();
         }
     } while (opcao != 7);
-    free(lista);    // Liberar memória alocada dinamicamente
+    free(lista);    
     lista = NULL;   // Medida de segurança 
     return 0;
 }/*******************************************************[ FIM DO MAIN ] *****************************************/
@@ -437,6 +436,7 @@ Funções Básicas (Funções compartilhadas com diversas outras funções de fo
 •	limparTela(): Executa um comando do sistema operacional (cls para Windows, clear para Unix-like) para limpar a tela do console.
 •	pausarExecucao(): Exibe uma mensagem solicitando que o usuário pressione ENTER para continuar e aguarda a entrada, mantendo a interface do console estável.
 •	tratarOpcaoInvalida(): Exibe uma mensagem de erro genérica para quando o usuário insere uma opção inválida em menus, acompanhada de um bipe.NNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNN*/
+
 // --- Implementações das Funções (em ordem alfabética para organização) ---
 void beep() {printf("\a");}
 void bufferLimpo() {int c; while ((c = getchar()) != '\n' && c != EOF);}
@@ -449,7 +449,6 @@ void carregarMovimentacoes(const char *nomeArquivo) {
     }
     capacidade = 0;
     total = 0; // Resetar total também, para começar limpo
-    
     if (fread(nomeUsuario, sizeof(nomeUsuario), 1, arquivo) != 1) { 
         strcpy(nomeUsuario, "Filipe"); 
     }
@@ -461,8 +460,6 @@ void carregarMovimentacoes(const char *nomeArquivo) {
         metaFinanceiraValorCentavos = 0;
         metaFinanceiraCadastrada = 0;
     }
-
-    // Tenta ler 'total' de movimentações
     if (fread(&total, sizeof(total), 1, arquivo) != 1) {
         total = 0; // Se falhar a leitura do total, assume 0
     }
@@ -507,7 +504,7 @@ void consultarSaldo() {
 int dataValida(int dia, int mes, int ano) {
     if (ano < 2000 || ano > 2100) return 0;
     if (mes < 1 || mes > 12) return 0;
-    int diasNoMes[] = {0, 31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31}; // Índice 0 não utilizado 
+    int diasNoMes[] = {0, 31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31};  
     // Verifica ano bissexto para fevereiro
     if ((ano % 4 == 0 && ano % 100 != 0) || (ano % 400 == 0)) {
         diasNoMes[2] = 29;
@@ -544,7 +541,6 @@ int exibirMenuConsentimentoDados() {
    
     TYPE_MSG(43); // (43) Pergunta de Consentimento 
     PRINT_MSG(15); // (15) "Digite [ 1 ] para SIM || Digite [ 2 ] para Sair: "
-
     while (1) {
         if (scanf("%i", &escolhaConsentimento) != 1) {
             bufferLimpo();
@@ -571,9 +567,9 @@ int exibirMenuConsentimentoDados() {
 
 void exibirMenuPrincipal() {
     limparTela();
-    printf(T(0), nomeUsuario); // Reutiliza a mensagem de boas-vindas com o nome do usuário
+    printf(T(0), nomeUsuario); // Mensagem de boas-vindas com o nome do usuário
     PRINT_MSG(8); // (8) Menu Principal
-    for (int willow = 1; willow <= 7; willow++) { // Alterado 'i' para 'willow'
+    for (int willow = 1; willow <= 7; willow++) { 
         printf("%s\n", T(willow)); // Textos de 1 a 7 do menu
     }
     PRINT_MSG(26); // (26) Sua Escolha:
@@ -688,7 +684,7 @@ void gerenciarIdioma() {
         tratarOpcaoInvalida();
         return;
     }
-    printf(T(22), idioma); // Confirmation - Language
+    printf(T(22), idioma); // (22) Confirmation - Language
     if (idiomaAtual == PT || idiomaAtual == FR || idiomaAtual == EN) { 
         int resultadoConsentimento = exibirMenuConsentimentoDados();
         if (resultadoConsentimento == 0) {
@@ -697,7 +693,7 @@ void gerenciarIdioma() {
             exit(0);
         }
         solicitarNovoNomeUsuario();
-        salvarTodasMovimentacoes("alef.bin"); // Salva o nome do usuário imediatamente
+        salvarTodasMovimentacoes("alef.bin"); 
     }
 }
 
@@ -758,7 +754,6 @@ void gerenciarRemocaoMovimentacao() {
         }
         if (strlen(desc_para_remover) == 0) 
             continue;
-
         if (removerMovimentacao(desc_para_remover)){
             TYPE_MSG(18); // (18) "Movimentacao removida com sucesso."
             salvarTodasMovimentacoes("alef.bin");
@@ -787,7 +782,6 @@ void gerenciarSaldoEMeta() {
     PRINT_MSG(26); //(26) "Sua Escolha: "
     scanf("%i", &subOpcao); 
     bufferLimpo(); 
-
     if (subOpcao == 1) {
         projetarMetaFinanceira(); 
     } else if (subOpcao == 2) { 
