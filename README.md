@@ -1,64 +1,55 @@
 # 💰 Diário Financeiro Pessoal
-
 ## 🏆 Sobre o Projeto
-
-O **Diário Financeiro Pessoal** é um gerenciador de finanças pessoais desenvolvido em **C** por um personagem fictício chamado **Filipe**, criado especialmente para este projeto. No storytelling desenvolvido por mim, este persona seria o estudante intercambista no Quebéc - CA, idealizador do projeto do Diario Financeiro, cujo objetivo é ajudar usuários a controlarem suas receitas e despesas, acompanharem o saldo atual e gerarem relatórios financeiros detalhados.  
-
-Com suporte a múltiplos idiomas (Português, Inglês e Francês - Canadá), o sistema oferece uma interface simples, eficiente e prática para facilitar o controle das finanças pessoais.
-
----
+O Diário Financeiro Pessoal é um gerenciador de finanças pessoais desenvolvido em C. O sistema permite o registro de receitas e despesas, o cálculo do saldo atualizado e a geração de relatórios detalhados sobre a movimentação financeira diária e mensal. Com suporte a múltiplos idiomas (Português, Inglês e Francês - Canadá) , o Diário Financeiro Pessoal oferece uma interface simples, eficiente e prática para facilitar o controle das finanças pessoais.
+Repositório do Código: https://github.com/johnatanwillow/diario_financeiro
 
 ## 🎯 Objetivos do Projeto
-
-- Criar uma ferramenta leve e acessível para acompanhar ganhos e gastos.
-- Atender a qualquer pessoa que deseje melhorar sua organização financeira.
-- Proporcionar uma experiência intuitiva e multilíngue.
-
----
+Auxiliar o usuário no controle de suas finanças pessoais.
+Permitir o registro de receitas e despesas, o cálculo do saldo atualizado, e a geração de relatórios detalhados.
+Garantir a persistência dos dados, assegurando que todas as informações sejam salvas e carregadas automaticamente.
+Proporcionar uma experiência intuitiva e multilíngue.
 
 ## 🛠 Funcionalidades Principais
+Cadastro de receitas e despesas: Permite solicitar e registrar transações, incluindo data, tipo (receita/despesa), valor, descrição e categoria.
 
-- **Cadastro de receitas e despesas**: Informe descrição, valor, data e categoria.
-- **Consulta de saldo atualizado**: Veja rapidamente seu saldo total.
-- **Geração de relatórios**:
-  - **Geral**: Lista todas as transações registradas.
-  - **Diário**: Filtra transações por dia específico.
-  - **Mensal**: Mostra as transações de um mês e ano escolhidos.
-  - **Gráfico de Fluxo de Caixa (ASCII)**: Visualização gráfica do fluxo financeiro.
-- **Definição de metas financeiras**: Estabeleça objetivos e acompanhe o progresso com uma barra indicadora.
-- **Remoção de transações**: Exclua registros com base na descrição.
-- **Suporte a múltiplos idiomas**: Português 🇧🇷, Inglês 🇨🇦 e Francês 🇨🇦.
-- **Persistência de dados**: As informações são salvas automaticamente em um arquivo binário `.bin`, mantendo tudo seguro entre execuções.
+Consulta de saldo atualizado: Calcula o saldo financeiro total e exibe as metas, se existirem.
 
----
+Geração de relatórios: Oferece opções para visualizar transações por dia, mês, ou um relatório geral. 
+
+
+Geral: Lista todas as transações registradas.
+Diário: Filtra transações por dia específico.
+Mensal: Mostra as transações de um mês e ano escolhidos.
+Gráfico de Fluxo de Caixa (ASCII): Gera um gráfico simplificado utilizando caracteres ASCII no console, mostrando visualmente as proporções de receitas, despesas e saldo total.
+
+Definição de metas financeiras: Permite definir ou atualizar uma meta financeira, exibindo seu nome, valor e o progresso em relação ao saldo atual com uma barra de progresso visual.
+
+Remoção de transações: Localiza e remove uma transação específica com base na sua descrição.
+
+Suporte a múltiplos idiomas: Permite alternar a interface do usuário entre Português (Brasil), Francês (Canadá) e Inglês (Canadá).
+
+
+Persistência de dados: Todas as transações financeiras e a meta financeira são armazenadas em um arquivo binário (df.bin), garantindo que os dados sejam preservados após o encerramento do programa. O sistema carrega automaticamente os dados do arquivo ao ser iniciado.
 
 ## 📜 Fluxo de Funcionamento
+O programa segue um fluxo de trabalho intuitivo, guiado por um menu principal.
 
 Ao iniciar o programa, você verá o seguinte menu principal:
 
-[1] Cadastrar Receita 🟢  
-[2] Cadastrar Despesa 🔴  
-[3] Consultar Saldo 💰  
-[4] Gerar Relatório 📊  
-[5] Alterar Idioma 🌍  
-[6] Remover Movimentação 🗑️  
-[7] Sair 🚪  
----
-![image](https://github.com/user-attachments/assets/4a6489c8-f66a-4617-bdac-ee3ff53538aa)
----
-### 📌 Exemplo Simplificado do Fluxo
+[1] Cadastrar Receita
+[2] Cadastrar Despesa
+[3] Consultar Saldo
+[4] Gerar Relatório
+[5] Alterar Idioma
+[6] Remover Movimentação
+[7] Sair
+## 📌 Exemplo Simplificado do Fluxo
 
-Início  
-  ↓  
-Exibir Menu Principal  
-  ↓  
-Usuário escolhe uma opção  
-  ↓  
-Executa a ação escolhida  
-  ↓  
-Retorna ao menu ou finaliza o programa  
+![alt text](image.png)
 
----
+Snippet de código
+
+graph TD
     A[Início do Programa] --> B{Carregar Movimentações e Meta (df.bin)};
     B --> C{Exibir Boas-vindas};
 
@@ -118,45 +109,40 @@ Retorna ao menu ou finaliza o programa
     AB -- Não --> D;
     AC -- Não --> D;
     AE --> GGG;
-
-
     I -- Opção 6: Remover Movimentação --> AG[Gerenciar Remoção de Movimentação];
     AG --> D;
-
     I -- Opção 7: Sair --> GGG[Salvar Todas Movimentações];
     GGG --> FIM[Fim do Programa];
-    ---
 
-## 🚀 Como Usar
-
-### 1. Baixe o código-fonte do projeto em sua máquina.
-
-### 2. Compile o código com um compilador C (ex: GCC):
-
-gcc -o diario_financeiro main.c -Wall
-
-### No Linux/macOS:
-./diario_financeiro
-
----
 ## ⚙️ Tecnologias Utilizadas
-Linguagem: C
-
+Linguagem: C 
 Compilador: GCC
+Armazenamento de dados: Arquivo binário .bin 
 
-Armazenamento de dados: Arquivo binário .bin
+### Estruturas de Dados: structs, vetores (dinâmicos), ponteiros, enumerações.
 
-💡 Melhorias Futuras
-Suporte a banco de dados.
+Interatividade: Entrada e saída de texto via console.
+✨ Destaques e Boas Práticas
+Modularização: O código é altamente modularizado com funções bem definidas, cada uma com responsabilidade clara e específica, promovendo a coesão.
+O código foi concebido a partir de uma percepção HCI, criando uma PERSONA especialmente desenvolvida para o projeto. Chamado de Filipe H. Valente, ele é um estudante de Ciência da Computação da UFG que, durante um intercâmbio em Montreal, Canadá, percebeu a necessidade de gerenciar suas finanças de forma simples e eficiente.
 
-Desenvolvimento de interface gráfica.
+### Persistência de Dados: Garante que os dados sejam preservados entre as sessões do programa.
+Uso de Inteiros para Valores Financeiros: Todos os valores monetários são armazenados em centavos (int) para evitar problemas de precisão inerentes à aritmética de ponto flutuante, uma prática recomendada em sistemas financeiros.
+Adoção do Padrão de Data ISO 8601 (YYYY-MM-DD): Garante clareza e interoperabilidade, alinhado às práticas do Governo do Canadá, evitando ambiguidades de formatos regionais.
+Multilíngue e Sensibilidade Cultural: Suporte a Português, Francês Canadense e Inglês Canadense, com prioridade ao francês em certas interações, refletindo a Lei 101 de Quebec e a conformidade com a Lei de Proteção de Dados do Canadá (PIPEDA) através da simulação de consentimento para dados anônimos.
 
-Relatórios e gráficos financeiros avançados.
+### Usabilidade e Criatividade: Implementa um efeito de "digitação" para mensagens, gerenciamento de meta financeira com barra de progresso visual e gráficos ASCII, tornando a interação mais dinâmica e envolvente.
 
-Exportação de relatórios para CSV.
+Tratamento de Erros e Validação: Entradas de dados inválidas (ex: caracteres em campos numéricos, datas incorretas) são tratadas adequadamente com mensagens claras e beeps.
+## 👨‍💻 Desenvolvido por
+GABRIEL DE MELO 
+JOHNATAN WILLOW DIAS DE ANDRADE 
+MATHEUS GOMES RODRIGUES 
+NICOLE DOS SANTOS CASSIANO 
+Alunos do curso Introdução à Programação - UNIVERSIDADE FEDERAL DE GOIAS, INSTITUTO DE INFORMÁTICA, SISTEMA DE INFORMAÇÃO. 
+
+Data de Criação: 27 de março de 2025
+Última Atualização: 15 de junho de 2025
 
 ## 📜 Licença
-**Este projeto é de código aberto e pode ser usado, estudado e modificado livremente para fins educacionais e pessoais.
-
-## 👨‍💻 Desenvolvido por
-**Alunos do curso de Introdução à Programação – 2025 🚀
+Este projeto é de código aberto e pode ser usado, estudado e modificado livremente para fins educacionais e pessoais.

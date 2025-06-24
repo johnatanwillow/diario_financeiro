@@ -911,8 +911,8 @@ int lerDataComValidacao(int *dia, int *mes, int *ano, int tipo_leitura) {
     int sucesso_leitura;
 
     do {
-        if (tipo_leitura == 1 || tipo_leitura == 0) { // Relatório diário ou cadastro de movimentação (aaaa-mm-dd)
-            PRINT_MSG(31); // (31)"Digite a data (aaaa-mm-dd): " (ou 11)
+        if (tipo_leitura == 1 || tipo_leitura == 0) { // Relatório diário (aaaa-mm-dd)
+            PRINT_MSG(31); // (31)"Digite a data (aaaa-mm-dd): "
             if (fgets(linha_data, sizeof(linha_data), stdin) == NULL) {
                 return 0;
             }
